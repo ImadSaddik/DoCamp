@@ -1,35 +1,24 @@
 <!-- res/layout/navigation_drawer_header.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#6FC84F"
+    android:layout_height="200dp"
+    android:gravity="bottom"
     android:orientation="vertical"
-    android:padding="16dp">
-
-    <ImageView
-        android:id="@+id/profileImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/circle_button" />
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:text="John Doe"
-        android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:layout_gravity="start"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/right_navigation_drawer_header_title"
+        android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/emailTextView"
-        android:layout_width="wrap_content"
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="4dp"
-        android:text="john.doe@example.com"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:layout_marginTop="16dp"
+        app:dividerInsetEnd="0dp" />
 </LinearLayout>

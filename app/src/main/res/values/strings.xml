@@ -3,4 +3,5 @@
     <string name="room_name">Room Name</string>
     <string name="cancel_button">Cancel</string>
     <string name="confirm_button">Confirm</string>
+    <string name="right_navigation_drawer_header_title">Your documents</string>
 </resources>

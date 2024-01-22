@@ -2,6 +2,7 @@ package com.example.ragapplication;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton uploadFilesButton;
     private TextView roomNameTextView;
     private RelativeLayout roomNameBackground;
+    private DatabaseHelper databaseHelper;
+    private SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
         instatiateViews();
         PDFBoxResourceLoader.init(getApplicationContext());
         gestureDetector = new GestureDetectorCompat(this, new HandleSwipeAndDrawers(this, drawerLayout));
+
+        databaseHelper = new DatabaseHelper(this);
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+
+        // For debugging purposes
+        // databaseHelper.numberOfEntriesInEachTable(this);
 
         leftNavigationDrawerIcon.setOnClickListener(v -> {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
