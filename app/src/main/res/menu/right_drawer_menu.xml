@@ -1,0 +1,16 @@
+<!-- res/menu/left_drawer_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/right_menu_item1"
+        android:title="Menu Item 1"/>
+
+    <item
+        android:id="@+id/right_menu_item2"
+        android:title="Menu Item 2"/>
+
+    <item
+        android:id="@+id/right_menu_item3"
+        android:title="Menu Item 3"/>
+
+</menu>

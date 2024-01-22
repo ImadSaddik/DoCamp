@@ -1,0 +1,36 @@
+<!-- res/layout/navigation_drawer_header.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?attr/colorPrimaryDark">
+
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/circle_button"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="John Doe"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="john.doe@example.com"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"/>
+</LinearLayout>

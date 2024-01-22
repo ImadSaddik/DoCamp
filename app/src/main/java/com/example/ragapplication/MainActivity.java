@@ -6,24 +6,35 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+
+import android.view.MotionEvent;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
-import com.tom_roush.pdfbox.pdmodel.PDDocument;
-import com.tom_roush.pdfbox.text.PDFTextStripper;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
+
+    private DrawerLayout drawerLayout;
+    private NavigationView leftNavigationView, rightNavigationView;
+    private GestureDetectorCompat gestureDetector;
+    private ImageView leftNavigationDrawerIcon, rightNavigationDrawerIcon;
+    private ImageButton uploadFilesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +46,49 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        instatiateViews();
         PDFBoxResourceLoader.init(getApplicationContext());
+        gestureDetector = new GestureDetectorCompat(this, new HandleSwipeAndDrawers(this, drawerLayout));
 
-        ImageButton uploadFilesButton = findViewById(R.id.uploadFilesButton);
+        leftNavigationDrawerIcon.setOnClickListener(v -> {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        rightNavigationDrawerIcon.setOnClickListener(v -> {
+            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            } else {
+                drawerLayout.openDrawer(GravityCompat.END);
+            }
+        });
+
         uploadFilesButton.setOnClickListener(v -> {
             // Create an Intent for text files
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {"text/plain", "application/pdf"});
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"text/plain", "application/pdf"});
             startActivityForResult(intent, 1);
         });
+    }
+
+    private void instatiateViews() {
+        drawerLayout = findViewById(R.id.drawerLayout);
+        leftNavigationView = findViewById(R.id.leftNavigationView);
+        rightNavigationView = findViewById(R.id.rightNavigationView);
+        leftNavigationDrawerIcon = findViewById(R.id.leftNavigationDrawerIcon);
+        rightNavigationDrawerIcon = findViewById(R.id.rightNavigationDrawerIcon);
+        uploadFilesButton = findViewById(R.id.uploadFilesButton);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        // Delegate the touch event to the gesture detector
+        gestureDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
