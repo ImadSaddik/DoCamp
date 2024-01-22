@@ -6,12 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
+
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -144,33 +147,36 @@ public class MainActivity extends AppCompatActivity {
                 TextExtractorFromFile textExtractorFromFile = new TextExtractorFromFile(this);
 
                 if ("application/pdf".equals(mimeType)) {
-                    textExtractorFromFile.extractTextFromPdfFile(fileUri, inputStream, new ResponseCallback() {
-                        @Override
-                        public void onResponse(String response) {
-                            Toast.makeText(MainActivity.this, String.valueOf(response.length()), Toast.LENGTH_SHORT).show();
-                            CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
-                            String[] chunks = characterTextSplitter.getChunksFromText(response);
+//                    textExtractorFromFile.extractTextFromPdfFile(fileUri, inputStream, new ResponseCallback() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            Toast.makeText(MainActivity.this, String.valueOf(response.length()), Toast.LENGTH_SHORT).show();
+//                            CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
+//                            String[] chunks = characterTextSplitter.getChunksFromText(response);
+//
+//                            Toast.makeText(MainActivity.this, "The number of chunks is : " + chunks.length, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable throwable) {
+//                            Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+                    addFileToContainer(fileName, R.id.linearLayoutPDFContainer);
 
-                            Toast.makeText(MainActivity.this, "The number of chunks is : " + chunks.length, Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-                            Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
                 } else if ("text/plain".equals(mimeType)) {
-                    textExtractorFromFile.extractTextFromTextFile(fileUri, inputStream, new ResponseCallback() {
-                        @Override
-                        public void onResponse(String response) {
-                            Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-                            Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+//                    textExtractorFromFile.extractTextFromTextFile(fileUri, inputStream, new ResponseCallback() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable throwable) {
+//                            Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+                    addFileToContainer(fileName, R.id.linearLayoutTxtContainer);
                 } else {
                     Toast.makeText(MainActivity.this, "Unsupported file type!", Toast.LENGTH_SHORT).show();
                 }
@@ -178,6 +184,73 @@ public class MainActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private void addFileToContainer(String fileName, int containerId) {
+        LinearLayout container = findViewById(containerId);
+        TextView noFileFoundTextView = getNoFileFoundTextView(container);
+        if (noFileFoundTextView != null && noFileFoundTextView.getVisibility() == View.VISIBLE) {
+            noFileFoundTextView.setVisibility(View.GONE);
+        }
+
+        LinearLayout fileLayout = new LinearLayout(this);
+        fileLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(0, 0, 0, getPixelValue(8));
+        fileLayout.setLayoutParams(layoutParams);
+
+        TextView textView = new TextView(this);
+        textView.setText(fileName);
+        textView.setTextSize(16);
+        textView.setMaxLines(1);
+        textView.setEllipsize(TextUtils.TruncateAt.END);
+        textView.setTypeface(getResources().getFont(R.font.roboto));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1
+        ));
+        textView.setPadding(0, 0, getPixelValue(8), 0);
+        fileLayout.addView(textView);
+
+        ImageButton removeButton = new ImageButton(this);
+        removeButton.setImageResource(R.drawable.remove_button);
+        removeButton.setLayoutParams(new LinearLayout.LayoutParams(
+                getPixelValue(20),
+                getPixelValue(20)
+        ));
+        removeButton.setBackground(null);
+        removeButton.setOnClickListener(v -> {
+            container.removeView(fileLayout);
+            int containerChildCount = container.getChildCount();
+            if (containerChildCount == 1 && noFileFoundTextView != null) {
+                noFileFoundTextView.setVisibility(View.VISIBLE);
+            }
+        });
+        fileLayout.addView(removeButton);
+
+        container.addView(fileLayout);
+    }
+
+    private TextView getNoFileFoundTextView(LinearLayout container) {
+        for (int i = 0; i < container.getChildCount(); i++) {
+            View view = container.getChildAt(i);
+            if (view instanceof TextView) {
+                TextView textView = (TextView) view;
+                if (textView.getText().toString().equals(getString(R.string.no_file_found))) {
+                    return textView;
+                }
+            }
+        }
+        return null;
+    }
+
+    private int getPixelValue(int dpValue) {
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale);
     }
 
     private void showInputDialog() {

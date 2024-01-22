@@ -4,4 +4,10 @@
     <string name="cancel_button">Cancel</string>
     <string name="confirm_button">Confirm</string>
     <string name="right_navigation_drawer_header_title">Your documents</string>
+    <string name="text_file_title">Text files</string>
+    <string name="pdf_file_title">PDF files</string>
+    <string name="no_file_found">No file found, please upload something.</string>
+    <string name="process_files">Processing files …</string>
+    <string name="start_process">Start process</string>
+    <string name="untitled_room">Untitled</string>
 </resources>

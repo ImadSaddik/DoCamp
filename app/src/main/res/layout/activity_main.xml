@@ -57,7 +57,7 @@
                     android:maxLines="1"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:text="TextView"
+                    android:text="@string/untitled_room"
                     android:textSize="14sp" />
             </RelativeLayout>
         </RelativeLayout>
@@ -118,15 +118,14 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/left_navigation_drawer_header"
-        app:menu="@menu/left_drawer_menu"/>
+        app:menu="@menu/left_drawer_menu" />
 
     <!-- Right Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
-            android:id="@+id/rightNavigationView"
+        android:id="@+id/rightNavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:headerLayout="@layout/right_navigation_drawer_header"
-        app:menu="@menu/right_drawer_menu"/>
+        app:headerLayout="@layout/right_navigation_drawer_header" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
