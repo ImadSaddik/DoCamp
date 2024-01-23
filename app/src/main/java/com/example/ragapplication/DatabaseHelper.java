@@ -1,10 +1,12 @@
 package com.example.ragapplication;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -68,6 +70,62 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void insertFile(String fileName, String fileType, Integer roomId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "SELECT File_ID FROM Files WHERE File_Name = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{fileName});
+        if (cursor.moveToFirst()) {
+            cursor.close();
+        } else {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("File_Name", fileName);
+            contentValues.put("File_Type", fileType);
+            contentValues.put("Room_ID", roomId);
+            db.insert("Files", null, contentValues);
+        }
+    }
+
+    public int getFileId(String fileName, String fileType) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String escapedFileName = fileName.replace("'", "''");
+        String query = "SELECT File_ID FROM Files WHERE File_Name = '" + escapedFileName + "' AND File_Type = '" + fileType + "'";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            int fileId = cursor.getInt(0);
+            return fileId;
+        }
+
+        return -1;
+    }
+
+    public void insertEmbedding(String chunk, String vectorRepresentation, Integer roomId, int fileId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Chunk", chunk);
+        contentValues.put("Vector_Representation", vectorRepresentation);
+        contentValues.put("Room_ID", roomId);
+        contentValues.put("File_ID", fileId);
+        db.insert("Embedding", null, contentValues);
+    }
+
+    public void logEmbeddingTable(Activity activity) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM Embedding";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Log.d("Chunk", cursor.getString(1));
+                Log.d("Vector Representation", cursor.getString(2));
+                Log.d("Room ID", String.valueOf(cursor.getInt(3)));
+                Log.d("File ID", String.valueOf(cursor.getInt(4)));
+                Log.d("Created At", cursor.getString(5));
+            } while (cursor.moveToNext());
+        }
+    }
+
     public void numberOfEntriesInEachTable(Activity activity) {
         int numberOfEntriesInEmbeddingTable = 0;
         int numberOfEntriesInRoomTable = 0;
@@ -100,9 +158,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             numberOfEntriesInFilesTable = cursor.getInt(0);
         }
 
-        Toast.makeText(activity, "Embedding Table: " + numberOfEntriesInEmbeddingTable, Toast.LENGTH_SHORT).show();
-        Toast.makeText(activity, "Room Table: " + numberOfEntriesInRoomTable, Toast.LENGTH_SHORT).show();
-        Toast.makeText(activity, "Chat History Table: " + numberOfEntriesInChatHistoryTable, Toast.LENGTH_SHORT).show();
-        Toast.makeText(activity, "Files Table: " + numberOfEntriesInFilesTable, Toast.LENGTH_SHORT).show();
+        Log.d("Embedding Table", String.valueOf(numberOfEntriesInEmbeddingTable));
+        Log.d("Room Table", String.valueOf(numberOfEntriesInRoomTable));
+        Log.d("Chat History Table", String.valueOf(numberOfEntriesInChatHistoryTable));
+        Log.d("Files Table", String.valueOf(numberOfEntriesInFilesTable));
     }
 }

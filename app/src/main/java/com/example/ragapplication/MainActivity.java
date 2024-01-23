@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         setNavigationDrawerListeners();
         setRoomNameListeners();
         setActionButtonsListeners();
+
+        databaseHelper.numberOfEntriesInEachTable(this);
+        databaseHelper.logEmbeddingTable(this);
     }
 
     private void instantiateViews() {
@@ -212,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         processingTextProgressContainer.setVisibility(View.GONE);
                         processFilesButton.setEnabled(true);
+                        databaseHelper.numberOfEntriesInEachTable(this);
                         Toast.makeText(this, "Finished processing files!", Toast.LENGTH_SHORT).show();
                     });
                 } catch (InterruptedException e) {
@@ -242,9 +246,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "File already added!", Toast.LENGTH_SHORT).show();
                 } else {
                     filesUriStore.put(fileName, fileUri);
+                    addFileToLeftNavigationDrawer(mimeType, fileName);
                 }
-
-                addFileToLeftNavigationDrawer(mimeType, fileName);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -263,6 +266,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return null;
+    }
+
+    private String removeExtension(String fileName) {
+        return fileName.split("\\.")[0];
     }
 
     private void addFileToLeftNavigationDrawer(String mimeType, String fileName) {
@@ -369,27 +376,23 @@ public class MainActivity extends AppCompatActivity {
         TextExtractorFromFile textExtractorFromFile = new TextExtractorFromFile(this);
 
         if ("application/pdf".equals(mimeType)) {
+            String fileName = getFileName(fileUri);
+            fileName = removeExtension(fileName);
+            databaseHelper.insertFile(fileName, "PDF", null);
             textExtractorFromFile.extractTextFromPdfFile(fileUri, inputStream, new ResponseCallback() {
                 @Override
                 public void onResponse(String response) {
                     CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
                     String[] chunks = characterTextSplitter.getChunksFromText(response);
+                    List<ArrayList<Double>> listOfEmbeddings = embedChunks(chunks);
+                    List<String> listOfEmbeddingsAsString = convertEmbeddingsToString(listOfEmbeddings);
 
-                    EmbeddingModel embeddingModel = new EmbeddingModel();
-                    List<ArrayList<Double>> listOfEmbeddings = new ArrayList<>();
-
-                    for (String chunk : chunks) {
-                        try {
-                            embeddingModel.getEmbedding(chunk).thenAccept(embedding -> {
-                                listOfEmbeddings.add(embedding);
-                                Log.d("EmbeddingOutputut", embedding.toString());
-                            });
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
+                    for (int i = 0; i < chunks.length; i++) {
+                        int fileId = databaseHelper.getFileId(removeExtension(getFileName(fileUri)), "PDF");
+                        if (fileId != -1) {
+                            databaseHelper.insertEmbedding(chunks[i], listOfEmbeddingsAsString.get(i), null, 1);
                         }
                     }
-
 
                     runOnUiThread(() -> {
                         processingTextProgressBar.incrementProgressBy(1);
@@ -406,11 +409,24 @@ public class MainActivity extends AppCompatActivity {
             });
 
         } else if ("text/plain".equals(mimeType)) {
+            String fileName = getFileName(fileUri);
+            fileName = removeExtension(fileName);
+            databaseHelper.insertFile(fileName, "TXT", null);
             textExtractorFromFile.extractTextFromTextFile(fileUri, inputStream, new ResponseCallback() {
                 @Override
                 public void onResponse(String response) {
                     CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
                     String[] chunks = characterTextSplitter.getChunksFromText(response);
+                    List<ArrayList<Double>> listOfEmbeddings = embedChunks(chunks);
+                    List<String> listOfEmbeddingsAsString = convertEmbeddingsToString(listOfEmbeddings);
+
+                    for (int i = 0; i < chunks.length; i++) {
+                        int fileId = databaseHelper.getFileId(removeExtension(getFileName(fileUri)), "TXT");
+                        if (fileId != -1) {
+                            databaseHelper.insertEmbedding(chunks[i], listOfEmbeddingsAsString.get(i), null, 1);
+                        }
+                    }
+
                     runOnUiThread(() -> {
                         processingTextProgressBar.incrementProgressBy(1);
                         processingTextProgressDescription.setText(textDescription);
@@ -428,5 +444,42 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Unsupported file type!", Toast.LENGTH_SHORT).show();
             latch.countDown();
         }
+    }
+
+    private List<ArrayList<Double>> embedChunks(String[] chunks) {
+        EmbeddingModel embeddingModel = new EmbeddingModel();
+        List<ArrayList<Double>> listOfEmbeddings = new ArrayList<>();
+
+        for (String chunk : chunks) {
+            try {
+                embeddingModel.getEmbedding(chunk).thenAccept(embedding -> {
+                    listOfEmbeddings.add(embedding);
+                    Log.d("EmbeddingOutputut", embedding.toString());
+                });
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        return listOfEmbeddings;
+    }
+
+    private List<String> convertEmbeddingsToString(List<ArrayList<Double>> listOfEmbeddings) {
+        List<String> listOfEmbeddingsAsString = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (ArrayList<Double> embedding : listOfEmbeddings) {
+            for (Double value : embedding) {
+                stringBuilder.append(value);
+                stringBuilder.append(",");
+            }
+            if (stringBuilder.length() > 0) {
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            }
+            String embeddingAsString = stringBuilder.toString();
+            listOfEmbeddingsAsString.add(embeddingAsString);
+        }
+
+        return listOfEmbeddingsAsString;
     }
 }
