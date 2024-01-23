@@ -11,4 +11,8 @@
     <string name="start_process">Start process</string>
     <string name="untitled_room">Untitled</string>
     <string name="started_processing_files">Started processing files!</string>
+    <string name="user_placeholder">User</string>
+    <string name="agent_placeholder">Agent</string>
+    <string name="time_placeholder">2nd, August - 19:01</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, quis aliquam nisl nunc eu nisi. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, quis aliquam nisl nunc eu nisi.</string>
 </resources>

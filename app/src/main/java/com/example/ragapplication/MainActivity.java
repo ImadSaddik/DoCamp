@@ -1,5 +1,6 @@
 package com.example.ragapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,7 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,10 +57,11 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView leftNavigationView, rightNavigationView;
     private GestureDetectorCompat gestureDetector;
     private ImageView leftNavigationDrawerIcon, rightNavigationDrawerIcon;
-    private ImageButton uploadFilesButton;
+    private ImageButton uploadFilesButton, sendQueryButton;
     private Button processFilesButton;
     private ProgressBar processingTextProgressBar;
-    private LinearLayout processingTextProgressContainer;
+    private LinearLayout processingTextProgressContainer, chatBodyContainer;
+    private TextInputEditText queryEditText;
     private TextView roomNameTextView, processingTextProgressDescription;
     private RelativeLayout roomNameBackground;
     private DatabaseHelper databaseHelper;
@@ -81,9 +85,21 @@ public class MainActivity extends AppCompatActivity {
         setNavigationDrawerListeners();
         setRoomNameListeners();
         setActionButtonsListeners();
+        setQueryEditTextListener();
 
         databaseHelper.numberOfEntriesInEachTable(this);
         databaseHelper.logEmbeddingTable(this);
+
+        for (int i = 0; i < 20; i++) {
+            populateChatBody();
+        }
+    }
+
+    private void populateChatBody() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.chat_message_block, null);
+
+        chatBodyContainer.addView(view);
     }
 
     private void instantiateViews() {
@@ -93,8 +109,11 @@ public class MainActivity extends AppCompatActivity {
         leftNavigationDrawerIcon = findViewById(R.id.leftNavigationDrawerIcon);
         rightNavigationDrawerIcon = findViewById(R.id.rightNavigationDrawerIcon);
         uploadFilesButton = findViewById(R.id.uploadFilesButton);
+        sendQueryButton = findViewById(R.id.sendQueryButton);
         roomNameTextView = findViewById(R.id.roomNameTextView);
         roomNameBackground = findViewById(R.id.roomNameBackground);
+        chatBodyContainer = findViewById(R.id.chatBodyContainer);
+        queryEditText = findViewById(R.id.queryEditText);
 
         View rightHeaderView = rightNavigationView.getHeaderView(0);
         processFilesButton = rightHeaderView.findViewById(R.id.processFilesButton);
@@ -222,6 +241,29 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();
+        });
+    }
+
+    private void setQueryEditTextListener() {
+        queryEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().trim().isEmpty()) {
+                    uploadFilesButton.setVisibility(View.VISIBLE);
+                    sendQueryButton.setVisibility(View.GONE);
+                } else {
+                    uploadFilesButton.setVisibility(View.GONE);
+                    sendQueryButton.setVisibility(View.VISIBLE);
+                }
+            }
         });
     }
 
