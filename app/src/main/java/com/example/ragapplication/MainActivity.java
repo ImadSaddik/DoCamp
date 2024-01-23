@@ -5,14 +5,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,9 +39,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +55,10 @@ public class MainActivity extends AppCompatActivity {
     private GestureDetectorCompat gestureDetector;
     private ImageView leftNavigationDrawerIcon, rightNavigationDrawerIcon;
     private ImageButton uploadFilesButton;
-    private TextView roomNameTextView;
+    private Button processFilesButton;
+    private ProgressBar processingTextProgressBar;
+    private LinearLayout processingTextProgressContainer;
+    private TextView roomNameTextView, processingTextProgressDescription;
     private RelativeLayout roomNameBackground;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase sqLiteDatabase;
@@ -81,6 +92,12 @@ public class MainActivity extends AppCompatActivity {
         uploadFilesButton = findViewById(R.id.uploadFilesButton);
         roomNameTextView = findViewById(R.id.roomNameTextView);
         roomNameBackground = findViewById(R.id.roomNameBackground);
+
+        View rightHeaderView = rightNavigationView.getHeaderView(0);
+        processFilesButton = rightHeaderView.findViewById(R.id.processFilesButton);
+        processingTextProgressBar = rightHeaderView.findViewById(R.id.processingTextProgressBar);
+        processingTextProgressDescription = rightHeaderView.findViewById(R.id.processingTextProgressDescription);
+        processingTextProgressContainer = rightHeaderView.findViewById(R.id.processingTextProgressContainer);
     }
 
     private void instantiateObjects() {
@@ -169,6 +186,46 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"text/plain", "application/pdf"});
             startActivityForResult(intent, 1);
         });
+
+        processFilesButton.setOnClickListener(v -> {
+            if (filesUriStore.isEmpty()) {
+                Toast.makeText(this, "No files to process!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            showProgressContainer();
+            processFilesButton.setEnabled(false);
+            processingTextProgressDescription.setText(getString(R.string.started_processing_files));
+
+            CountDownLatch latch = new CountDownLatch(filesUriStore.size());
+            for (Map.Entry<String, Uri> entry : filesUriStore.entrySet()) {
+                try {
+                    processFiles(entry.getValue(), latch);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            new Thread(() -> {
+                try {
+                    latch.await();
+                    runOnUiThread(() -> {
+                        processingTextProgressContainer.setVisibility(View.GONE);
+                        processFilesButton.setEnabled(true);
+                        Toast.makeText(this, "Finished processing files!", Toast.LENGTH_SHORT).show();
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        });
+    }
+
+    private void showProgressContainer() {
+        processingTextProgressContainer.setVisibility(View.VISIBLE);
+
+        processingTextProgressBar.setMax(filesUriStore.size());
+        processingTextProgressBar.setProgress(0);
     }
 
     @Override
@@ -275,6 +332,8 @@ public class MainActivity extends AppCompatActivity {
         removeButton.setBackground(null);
 
         removeButton.setOnClickListener(v -> {
+            String fileName = ((TextView) fileRowLayout.getChildAt(0)).getText().toString();
+            filesUriStore.remove(fileName);
             rowsContainer.removeView(fileRowLayout);
             int containerChildCount = rowsContainer.getChildCount();
             if (containerChildCount == 1 && noFileFoundTextView != null) {
@@ -302,8 +361,10 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
-    private void processFiles(Uri fileUri) throws FileNotFoundException {
+
+    private void processFiles(Uri fileUri, CountDownLatch latch) throws FileNotFoundException {
         String mimeType = getContentResolver().getType(fileUri);
+        String textDescription = "Processing " + getFileName(fileUri);
         InputStream inputStream = getContentResolver().openInputStream(fileUri);
         TextExtractorFromFile textExtractorFromFile = new TextExtractorFromFile(this);
 
@@ -311,35 +372,61 @@ public class MainActivity extends AppCompatActivity {
             textExtractorFromFile.extractTextFromPdfFile(fileUri, inputStream, new ResponseCallback() {
                 @Override
                 public void onResponse(String response) {
-                    Toast.makeText(MainActivity.this, String.valueOf(response.length()), Toast.LENGTH_SHORT).show();
                     CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
                     String[] chunks = characterTextSplitter.getChunksFromText(response);
 
-                    Toast.makeText(MainActivity.this, "The number of chunks is : " + chunks.length, Toast.LENGTH_SHORT).show();
+                    EmbeddingModel embeddingModel = new EmbeddingModel();
+                    List<ArrayList<Double>> listOfEmbeddings = new ArrayList<>();
+
+                    for (String chunk : chunks) {
+                        try {
+                            embeddingModel.getEmbedding(chunk).thenAccept(embedding -> {
+                                listOfEmbeddings.add(embedding);
+                                Log.d("EmbeddingOutputut", embedding.toString());
+                            });
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+
+
+                    runOnUiThread(() -> {
+                        processingTextProgressBar.incrementProgressBy(1);
+                        processingTextProgressDescription.setText(textDescription);
+                    });
+                    latch.countDown();
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
                     Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
+                    latch.countDown();
                 }
             });
-//            addFileToContainer(fileName, R.id.linearLayoutPDFContainer);
 
         } else if ("text/plain".equals(mimeType)) {
             textExtractorFromFile.extractTextFromTextFile(fileUri, inputStream, new ResponseCallback() {
                 @Override
                 public void onResponse(String response) {
-                    Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
+                    CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
+                    String[] chunks = characterTextSplitter.getChunksFromText(response);
+                    runOnUiThread(() -> {
+                        processingTextProgressBar.incrementProgressBy(1);
+                        processingTextProgressDescription.setText(textDescription);
+                    });
+                    latch.countDown();
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
                     Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
+                    latch.countDown();
                 }
             });
-//            addFileToContainer(fileName, R.id.linearLayoutTxtContainer);
         } else {
             Toast.makeText(MainActivity.this, "Unsupported file type!", Toast.LENGTH_SHORT).show();
+            latch.countDown();
         }
     }
 }

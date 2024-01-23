@@ -97,12 +97,37 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/startProcessButton"
+        android:id="@+id/processFilesButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/roboto_medium"
         android:text="@string/start_process"
         android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/processingTextProgressContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/processingTextProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/processingTextProgressDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:maxLines="1"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </LinearLayout>

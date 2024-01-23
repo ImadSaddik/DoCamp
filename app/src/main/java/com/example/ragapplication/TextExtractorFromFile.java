@@ -34,7 +34,6 @@ public class TextExtractorFromFile {
             return text;
         }).thenAccept(text -> activity.runOnUiThread(() -> {
             if (text != null) {
-                Toast.makeText(activity, "File processed!", Toast.LENGTH_SHORT).show();
                 callback.onResponse(text);
             } else {
                 callback.onError(new Throwable("Error processing file!"));
@@ -56,7 +55,6 @@ public class TextExtractorFromFile {
             return text;
         }).thenAccept(text -> activity.runOnUiThread(() -> {
             if (text != null) {
-                Toast.makeText(activity, "File processed!", Toast.LENGTH_SHORT).show();
                 callback.onResponse(text);
             } else {
                 callback.onError(new Throwable("Error processing file!"));

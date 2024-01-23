@@ -39,4 +39,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation("com.tom-roush:pdfbox-android:2.0.27.0")
+
+    implementation("com.google.ai.client.generativeai:generativeai:0.1.2")
+    implementation("com.google.guava:guava:31.0.1-android")
+    implementation("org.reactivestreams:reactive-streams:1.0.4")
 }

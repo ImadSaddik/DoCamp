@@ -10,4 +10,5 @@
     <string name="process_files">Processing files …</string>
     <string name="start_process">Start process</string>
     <string name="untitled_room">Untitled</string>
+    <string name="started_processing_files">Started processing files!</string>
 </resources>
