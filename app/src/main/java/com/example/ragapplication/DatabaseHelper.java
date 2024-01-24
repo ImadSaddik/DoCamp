@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -70,8 +71,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertFile(String fileName, String fileType, Integer roomId) {
+    public int getRoomTableSize() {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM Room";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            Log.d("Room Table Size", String.valueOf(cursor.getInt(0)));
+            return cursor.getInt(0);
+        }
+
+        return -1;
+    }
+
+    public void insertRoom(int roomID, String roomName) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Room_ID", roomID);
+        contentValues.put("Room_Name", roomName);
+        db.insert("Room", null, contentValues);
+    }
+
+    public void setRoomName(String roomName, int roomID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "UPDATE Room SET Room_Name = '" + roomName + "' WHERE Room_ID = " + roomID;
+        db.execSQL(query);
+    }
+
+    public void insertFile(String fileName, String mimeType, Integer roomId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String fileType = FileUtilities.getFileType(mimeType);
 
         String query = "SELECT File_ID FROM Files WHERE File_Name = ?";
         Cursor cursor = db.rawQuery(query, new String[]{fileName});

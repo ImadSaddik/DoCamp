@@ -13,6 +13,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 public class EmbeddingModel {
 
@@ -22,11 +26,14 @@ public class EmbeddingModel {
             try {
                 String apiKey = BuildConfig.apiKey;
                 String apiURL = "https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key=" + apiKey;
-                String content = "{ \"model\": \"models/embedding-001\", \"content\": { \"parts\":[{ \"text\": \"" + query + "\"}]}}";
+                String escapedQuery = query.replace("\"", "\\\"").replace("'", "\\'");
+                String content = "{ \"model\": \"models/embedding-001\", \"content\": { \"parts\":[{ \"text\": \"" + escapedQuery + "\"}]}}";
                 String response = sendPostRequest(apiURL, content);
                 embeddingValues = parseEmbeddingResponse(response);
+                Log.d("Embedding Response", embeddingValues);
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.d("Embedding Error", e.getMessage() + "\n" + query);
             }
             return embeddingValues;
         });
@@ -77,11 +84,13 @@ public class EmbeddingModel {
     }
 
     private String convertEmbeddingToString(ArrayList<Double> embeddingValues) {
+        Log.d("Embedding Before", embeddingValues.toString());
         StringBuilder embeddingString = new StringBuilder();
         for (Double value : embeddingValues) {
             embeddingString.append(value.toString());
             embeddingString.append(",");
         }
+        Log.d("Embedding After", embeddingString.toString());
         if (embeddingString.length() > 0) {
             embeddingString.deleteCharAt(embeddingString.length() - 1);
         }
@@ -89,22 +98,28 @@ public class EmbeddingModel {
         return embeddingString.toString();
     }
 
-    public List<String> embedChunks(String[] chunks) {
-        EmbeddingModel embeddingModel = new EmbeddingModel();
-        List<String> listOfEmbeddings = new ArrayList<>();
+    public CompletableFuture<List<String>> embedChunks(String[] chunks) {
+        List<CompletableFuture<String>> futures = new ArrayList<>();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         for (String chunk : chunks) {
-            try {
-                embeddingModel.getEmbedding(chunk).thenAccept(embedding -> {
-                    listOfEmbeddings.add(embedding);
-                    Log.d("EmbeddingOutput", embedding.toString());
-                });
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            futures.add(CompletableFuture.supplyAsync(() -> {
+                try {
+                    Thread.sleep(1500);
+                    return getEmbedding(chunk).join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
+            }, scheduler).thenApply(embedding -> {
+                Log.d("Embedding Sleep", embedding);
+                return embedding;
+            }));
         }
 
-        return listOfEmbeddings;
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> futures.stream()
+                        .map(CompletableFuture::join)
+                        .collect(Collectors.toList()));
     }
 }

@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.OpenableColumns;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -35,15 +36,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
+    public static int ROOM_ID;
 
     private DrawerLayout drawerLayout;
     private NavigationView leftNavigationView, rightNavigationView;
@@ -79,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateViews();
         instantiateObjects();
+//        databaseHelper.onUpgrade(sqLiteDatabase, 1, 1);
+        createRoom();
 
         handleNavigationDrawers.setNavigationDrawerListeners();
         roomNameHandler.setRoomNameListeners();
@@ -160,6 +160,23 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void createRoom() {
+        setRoomID();
+
+        String roomName = roomNameTextView.getText().toString();
+        databaseHelper.insertRoom(ROOM_ID, roomName);
+    }
+
+    private void setRoomID() {
+        int roomTableSize = databaseHelper.getRoomTableSize();
+        if (roomTableSize == -1) {
+            ROOM_ID = 1;
+        } else {
+            ROOM_ID = roomTableSize + 1;
+        }
+        Log.d("Room ID", String.valueOf(ROOM_ID));
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         gestureDetector.onTouchEvent(ev);
@@ -194,6 +211,9 @@ public class MainActivity extends AppCompatActivity {
 
             for (Map.Entry<String, Uri> entry : filesUriStore.entrySet()) {
                 try {
+                    String mimeType = getContentResolver().getType(entry.getValue());
+                    databaseHelper.insertFile(entry.getKey(), mimeType, ROOM_ID);
+
                     fileProcessor.processFile(entry.getValue());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -208,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                         processFilesButton.setEnabled(true);
 
                         Toast.makeText(this, "Finished processing files!", Toast.LENGTH_SHORT).show();
+                        databaseHelper.numberOfEntriesInEachTable(this);
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -230,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             try {
                 Uri fileUri = data.getData();
-                String fileName = getFileName(fileUri);
+                String fileName = removeExtension(getFileName(fileUri));
                 String mimeType = getContentResolver().getType(fileUri);
 
                 if (filesUriStore.containsKey(fileName)) {
@@ -243,6 +264,10 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String removeExtension(String fileName) {
+        return fileName.split("\\.")[0];
     }
 
     private String getFileName(Uri fileUri) {
