@@ -17,7 +17,25 @@ public class TextExtractorFromFile {
         this.activity = activity;
     }
 
-    public void extractTextFromPdfFile(Uri fileUri, InputStream inputStream, ResponseCallback callback) {
+    public CompletableFuture<String> extractTextFromFile(Uri fileUri, InputStream inputStream) {
+        String mimeType = this.activity.getContentResolver().getType(fileUri);
+
+        CompletableFuture<String> resultFuture = new CompletableFuture<>();
+
+        if (mimeType.equals("application/pdf")) {
+            extractTextFromPdfFile(fileUri, inputStream, resultFuture);
+        } else if (mimeType.equals("text/plain")) {
+            extractTextFromTextFile(fileUri, inputStream, resultFuture);
+        } else {
+            Toast.makeText(this.activity, "Unsupported file type!", Toast.LENGTH_SHORT).show();
+            resultFuture.completeExceptionally(new UnsupportedOperationException("Unsupported file type"));
+        }
+
+        return resultFuture;
+    }
+
+
+    private void extractTextFromPdfFile(Uri fileUri, InputStream inputStream, CompletableFuture<String> resultFuture) {
         CompletableFuture.supplyAsync(() -> {
             String text = null;
             try {
@@ -34,14 +52,14 @@ public class TextExtractorFromFile {
             return text;
         }).thenAccept(text -> activity.runOnUiThread(() -> {
             if (text != null) {
-                callback.onResponse(text);
+                resultFuture.complete(text);
             } else {
-                callback.onError(new Throwable("Error processing file!"));
+                resultFuture.completeExceptionally(new RuntimeException("Error processing file!"));
             }
         }));
     }
 
-    public void extractTextFromTextFile(Uri fileUri, InputStream inputStream, ResponseCallback callback) {
+    private void extractTextFromTextFile(Uri fileUri, InputStream inputStream, CompletableFuture<String> resultFuture) {
         CompletableFuture.supplyAsync(() -> {
             String text = null;
             try {
@@ -55,9 +73,9 @@ public class TextExtractorFromFile {
             return text;
         }).thenAccept(text -> activity.runOnUiThread(() -> {
             if (text != null) {
-                callback.onResponse(text);
+                resultFuture.complete(text);
             } else {
-                callback.onError(new Throwable("Error processing file!"));
+                resultFuture.completeExceptionally(new RuntimeException("Error processing file!"));
             }
         }));
     }

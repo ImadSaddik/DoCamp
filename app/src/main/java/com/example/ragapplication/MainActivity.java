@@ -6,12 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.OpenableColumns;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -28,11 +24,9 @@ import androidx.annotation.Nullable;
 
 import android.view.MotionEvent;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GestureDetectorCompat;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -42,13 +36,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase sqLiteDatabase;
     private Map<String, Uri> filesUriStore;
+    private EmbeddingModel embeddingModel;
+    private HandleRightNavigationDrawer handleRightNavigationDrawer;
+    private HandleNavigationDrawersVisibility handleNavigationDrawers;
+    private RoomNameHandler roomNameHandler;
+    private HandleUserQuery handleUserQuery;
+    private HandleSwipeAndDrawers handleSwipeAndDrawers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +80,12 @@ public class MainActivity extends AppCompatActivity {
         instantiateViews();
         instantiateObjects();
 
-        setNavigationDrawerListeners();
-        setRoomNameListeners();
-        setActionButtonsListeners();
-        setQueryEditTextListener();
+        handleNavigationDrawers.setNavigationDrawerListeners();
+        roomNameHandler.setRoomNameListeners();
 
-        databaseHelper.numberOfEntriesInEachTable(this);
-        databaseHelper.logEmbeddingTable(this);
+        setActionButtonsListeners();
+        handleUserQuery.swapBetweenUploadAndSend();
+        handleUserQuery.setupSendQueryButtonListener();
 
         for (int i = 0; i < 20; i++) {
             populateChatBody();
@@ -124,81 +121,49 @@ public class MainActivity extends AppCompatActivity {
 
     private void instantiateObjects() {
         PDFBoxResourceLoader.init(getApplicationContext());
-        gestureDetector = new GestureDetectorCompat(this, new HandleSwipeAndDrawers(this, drawerLayout));
 
         databaseHelper = new DatabaseHelper(this);
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
         filesUriStore = new HashMap<>();
-    }
+        embeddingModel = new EmbeddingModel();
 
-    private void setNavigationDrawerListeners() {
-        leftNavigationDrawerIcon.setOnClickListener(v -> {
-            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                drawerLayout.closeDrawer(GravityCompat.START);
-            } else {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
-
-        rightNavigationDrawerIcon.setOnClickListener(v -> {
-            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-                drawerLayout.closeDrawer(GravityCompat.END);
-            } else {
-                drawerLayout.openDrawer(GravityCompat.END);
-            }
-        });
+        handleSwipeAndDrawers = new HandleSwipeAndDrawers(
+                this,
+                drawerLayout
+        );
+        gestureDetector = new GestureDetectorCompat(
+                this,
+                handleSwipeAndDrawers
+        );
+        handleRightNavigationDrawer = new HandleRightNavigationDrawer(
+                rightNavigationView,
+                this,
+                filesUriStore
+        );
+        handleNavigationDrawers = new HandleNavigationDrawersVisibility(
+                leftNavigationDrawerIcon,
+                rightNavigationDrawerIcon,
+                leftNavigationView,
+                rightNavigationView,
+                drawerLayout
+        );
+        roomNameHandler = new RoomNameHandler(
+                roomNameTextView,
+                roomNameBackground,
+                this
+        );
+        handleUserQuery = new HandleUserQuery(
+                queryEditText,
+                uploadFilesButton,
+                sendQueryButton
+        );
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         gestureDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
-    }
-
-    private void setRoomNameListeners() {
-        roomNameTextView.setOnClickListener(v -> {
-            showInputDialog();
-        });
-        roomNameBackground.setOnClickListener(v -> {
-            showInputDialog();
-        });
-    }
-
-    private void showInputDialog() {
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.room_name_dialog, null);
-
-        TextInputEditText editText = view.findViewById(R.id.roomNameEditText);
-        Button cancelButton = view.findViewById(R.id.cancelButton);
-        Button confirmButton = view.findViewById(R.id.confirmButton);
-
-        AlertDialog dialog = getAlertDialog(view);
-        setAlertDialogButtonsListeners(dialog, editText, cancelButton, confirmButton);
-
-        dialog.show();
-    }
-
-    private void setAlertDialogButtonsListeners(AlertDialog dialog, TextInputEditText editText, Button cancelButton, Button confirmButton) {
-        cancelButton.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
-
-        confirmButton.setOnClickListener(v -> {
-            String newText = editText.getText().toString();
-            roomNameTextView.setText(newText);
-            dialog.dismiss();
-        });
-    }
-
-    private AlertDialog getAlertDialog(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(view);
-
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background_room_dialog);
-
-        return dialog;
     }
 
     private void setActionButtonsListeners() {
@@ -220,10 +185,17 @@ public class MainActivity extends AppCompatActivity {
             processingTextProgressDescription.setText(getString(R.string.started_processing_files));
 
             CountDownLatch latch = new CountDownLatch(filesUriStore.size());
+            FileProcessor fileProcessor = new FileProcessor(
+                    this,
+                    latch,
+                    processingTextProgressBar,
+                    processingTextProgressDescription
+            );
+
             for (Map.Entry<String, Uri> entry : filesUriStore.entrySet()) {
                 try {
-                    processFiles(entry.getValue(), latch);
-                } catch (FileNotFoundException e) {
+                    fileProcessor.processFile(entry.getValue());
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -234,36 +206,13 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         processingTextProgressContainer.setVisibility(View.GONE);
                         processFilesButton.setEnabled(true);
-                        databaseHelper.numberOfEntriesInEachTable(this);
+
                         Toast.makeText(this, "Finished processing files!", Toast.LENGTH_SHORT).show();
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }).start();
-        });
-    }
-
-    private void setQueryEditTextListener() {
-        queryEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().trim().isEmpty()) {
-                    uploadFilesButton.setVisibility(View.VISIBLE);
-                    sendQueryButton.setVisibility(View.GONE);
-                } else {
-                    uploadFilesButton.setVisibility(View.GONE);
-                    sendQueryButton.setVisibility(View.VISIBLE);
-                }
-            }
         });
     }
 
@@ -288,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "File already added!", Toast.LENGTH_SHORT).show();
                 } else {
                     filesUriStore.put(fileName, fileUri);
-                    addFileToLeftNavigationDrawer(mimeType, fileName);
+                    handleRightNavigationDrawer.addFilesToNavigationDrawer(mimeType, fileName);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -308,220 +257,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return null;
-    }
-
-    private String removeExtension(String fileName) {
-        return fileName.split("\\.")[0];
-    }
-
-    private void addFileToLeftNavigationDrawer(String mimeType, String fileName) {
-        if ("application/pdf".equals(mimeType)) {
-            addFileToContainer(fileName, R.id.linearLayoutPDFContainer);
-        } else if ("text/plain".equals(mimeType)) {
-            addFileToContainer(fileName, R.id.linearLayoutTxtContainer);
-        } else {
-            Toast.makeText(MainActivity.this, "Unsupported file type!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void addFileToContainer(String fileName, int containerId) {
-        LinearLayout rowsContainer = findViewById(containerId);
-
-        TextView noFileFoundTextView = getNoFileFoundTextView(rowsContainer);
-        if (noFileFoundTextView != null && noFileFoundTextView.getVisibility() == View.VISIBLE) {
-            noFileFoundTextView.setVisibility(View.GONE);
-        }
-
-        LinearLayout fileRowLayout = getFileRowLayout();
-        TextView fileNameTextView = getfileNameTextView(fileName);
-        ImageButton removeButton = getRemoveButton(rowsContainer, fileRowLayout, noFileFoundTextView);
-
-        fileRowLayout.addView(fileNameTextView);
-        fileRowLayout.addView(removeButton);
-
-        rowsContainer.addView(fileRowLayout);
-    }
-
-    private LinearLayout getFileRowLayout() {
-        LinearLayout fileRowLayout = new LinearLayout(this);
-        fileRowLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams.setMargins(0, 0, 0, getPixelValue(8));
-        fileRowLayout.setLayoutParams(layoutParams);
-
-        return fileRowLayout;
-    }
-
-    private TextView getfileNameTextView(String fileName) {
-        TextView fileNameTextView = new TextView(this);
-
-        fileNameTextView.setText(fileName);
-        fileNameTextView.setTextSize(16);
-        fileNameTextView.setMaxLines(1);
-        fileNameTextView.setEllipsize(TextUtils.TruncateAt.END);
-        fileNameTextView.setTypeface(getResources().getFont(R.font.roboto));
-        fileNameTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        fileNameTextView.setPadding(0, 0, getPixelValue(8), 0);
-
-        return fileNameTextView;
-    }
-
-    private ImageButton getRemoveButton(LinearLayout rowsContainer, LinearLayout fileRowLayout, TextView noFileFoundTextView) {
-        ImageButton removeButton = new ImageButton(this);
-
-        removeButton.setImageResource(R.drawable.remove_button);
-        removeButton.setLayoutParams(new LinearLayout.LayoutParams(
-                getPixelValue(20),
-                getPixelValue(20))
-        );
-        removeButton.setBackground(null);
-
-        removeButton.setOnClickListener(v -> {
-            String fileName = ((TextView) fileRowLayout.getChildAt(0)).getText().toString();
-            filesUriStore.remove(fileName);
-            rowsContainer.removeView(fileRowLayout);
-            int containerChildCount = rowsContainer.getChildCount();
-            if (containerChildCount == 1 && noFileFoundTextView != null) {
-                noFileFoundTextView.setVisibility(View.VISIBLE);
-            }
-        });
-
-        return removeButton;
-    }
-
-    private int getPixelValue(int dpValue) {
-        float scale = getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale);
-    }
-
-    private TextView getNoFileFoundTextView(LinearLayout container) {
-        for (int i = 0; i < container.getChildCount(); i++) {
-            View view = container.getChildAt(i);
-            if (view instanceof TextView) {
-                TextView textView = (TextView) view;
-                if (textView.getText().toString().equals(getString(R.string.no_file_found))) {
-                    return textView;
-                }
-            }
-        }
-        return null;
-    }
-
-    private void processFiles(Uri fileUri, CountDownLatch latch) throws FileNotFoundException {
-        String mimeType = getContentResolver().getType(fileUri);
-        String textDescription = "Processing " + getFileName(fileUri);
-        InputStream inputStream = getContentResolver().openInputStream(fileUri);
-        TextExtractorFromFile textExtractorFromFile = new TextExtractorFromFile(this);
-
-        if ("application/pdf".equals(mimeType)) {
-            String fileName = getFileName(fileUri);
-            fileName = removeExtension(fileName);
-            databaseHelper.insertFile(fileName, "PDF", null);
-            textExtractorFromFile.extractTextFromPdfFile(fileUri, inputStream, new ResponseCallback() {
-                @Override
-                public void onResponse(String response) {
-                    CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
-                    String[] chunks = characterTextSplitter.getChunksFromText(response);
-                    List<ArrayList<Double>> listOfEmbeddings = embedChunks(chunks);
-                    List<String> listOfEmbeddingsAsString = convertEmbeddingsToString(listOfEmbeddings);
-
-                    for (int i = 0; i < chunks.length; i++) {
-                        int fileId = databaseHelper.getFileId(removeExtension(getFileName(fileUri)), "PDF");
-                        if (fileId != -1) {
-                            databaseHelper.insertEmbedding(chunks[i], listOfEmbeddingsAsString.get(i), null, 1);
-                        }
-                    }
-
-                    runOnUiThread(() -> {
-                        processingTextProgressBar.incrementProgressBy(1);
-                        processingTextProgressDescription.setText(textDescription);
-                    });
-                    latch.countDown();
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
-                    latch.countDown();
-                }
-            });
-
-        } else if ("text/plain".equals(mimeType)) {
-            String fileName = getFileName(fileUri);
-            fileName = removeExtension(fileName);
-            databaseHelper.insertFile(fileName, "TXT", null);
-            textExtractorFromFile.extractTextFromTextFile(fileUri, inputStream, new ResponseCallback() {
-                @Override
-                public void onResponse(String response) {
-                    CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
-                    String[] chunks = characterTextSplitter.getChunksFromText(response);
-                    List<ArrayList<Double>> listOfEmbeddings = embedChunks(chunks);
-                    List<String> listOfEmbeddingsAsString = convertEmbeddingsToString(listOfEmbeddings);
-
-                    for (int i = 0; i < chunks.length; i++) {
-                        int fileId = databaseHelper.getFileId(removeExtension(getFileName(fileUri)), "TXT");
-                        if (fileId != -1) {
-                            databaseHelper.insertEmbedding(chunks[i], listOfEmbeddingsAsString.get(i), null, 1);
-                        }
-                    }
-
-                    runOnUiThread(() -> {
-                        processingTextProgressBar.incrementProgressBy(1);
-                        processingTextProgressDescription.setText(textDescription);
-                    });
-                    latch.countDown();
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    Toast.makeText(MainActivity.this, "Error processing file!", Toast.LENGTH_SHORT).show();
-                    latch.countDown();
-                }
-            });
-        } else {
-            Toast.makeText(MainActivity.this, "Unsupported file type!", Toast.LENGTH_SHORT).show();
-            latch.countDown();
-        }
-    }
-
-    private List<ArrayList<Double>> embedChunks(String[] chunks) {
-        EmbeddingModel embeddingModel = new EmbeddingModel();
-        List<ArrayList<Double>> listOfEmbeddings = new ArrayList<>();
-
-        for (String chunk : chunks) {
-            try {
-                embeddingModel.getEmbedding(chunk).thenAccept(embedding -> {
-                    listOfEmbeddings.add(embedding);
-                    Log.d("EmbeddingOutputut", embedding.toString());
-                });
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-
-        return listOfEmbeddings;
-    }
-
-    private List<String> convertEmbeddingsToString(List<ArrayList<Double>> listOfEmbeddings) {
-        List<String> listOfEmbeddingsAsString = new ArrayList<>();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (ArrayList<Double> embedding : listOfEmbeddings) {
-            for (Double value : embedding) {
-                stringBuilder.append(value);
-                stringBuilder.append(",");
-            }
-            if (stringBuilder.length() > 0) {
-                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            }
-            String embeddingAsString = stringBuilder.toString();
-            listOfEmbeddingsAsString.add(embeddingAsString);
-        }
-
-        return listOfEmbeddingsAsString;
     }
 }

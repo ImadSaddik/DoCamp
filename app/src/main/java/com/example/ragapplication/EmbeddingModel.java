@@ -1,6 +1,8 @@
 package com.example.ragapplication;
 
 
+import android.util.Log;
+
 import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,13 +11,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class EmbeddingModel {
 
-    public CompletableFuture<ArrayList<Double>> getEmbedding(String query) {
+    public CompletableFuture<String> getEmbedding(String query) {
         return CompletableFuture.supplyAsync(() -> {
-            ArrayList<Double> embeddingValues = new ArrayList<>();
+            String embeddingValues = "";
             try {
                 String apiKey = BuildConfig.apiKey;
                 String apiURL = "https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key=" + apiKey;
@@ -55,7 +58,7 @@ public class EmbeddingModel {
         }
     }
 
-    private ArrayList<Double> parseEmbeddingResponse(String response) {
+    private String parseEmbeddingResponse(String response) {
         ArrayList<Double> embeddingValues = new ArrayList<>();
         String valuesStartTag = "\"values\": [";
         String valuesEndTag = "]";
@@ -70,6 +73,38 @@ public class EmbeddingModel {
             }
         }
 
-        return embeddingValues;
+        return convertEmbeddingToString(embeddingValues);
+    }
+
+    private String convertEmbeddingToString(ArrayList<Double> embeddingValues) {
+        StringBuilder embeddingString = new StringBuilder();
+        for (Double value : embeddingValues) {
+            embeddingString.append(value.toString());
+            embeddingString.append(",");
+        }
+        if (embeddingString.length() > 0) {
+            embeddingString.deleteCharAt(embeddingString.length() - 1);
+        }
+
+        return embeddingString.toString();
+    }
+
+    public List<String> embedChunks(String[] chunks) {
+        EmbeddingModel embeddingModel = new EmbeddingModel();
+        List<String> listOfEmbeddings = new ArrayList<>();
+
+        for (String chunk : chunks) {
+            try {
+                embeddingModel.getEmbedding(chunk).thenAccept(embedding -> {
+                    listOfEmbeddings.add(embedding);
+                    Log.d("EmbeddingOutput", embedding.toString());
+                });
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        return listOfEmbeddings;
     }
 }
