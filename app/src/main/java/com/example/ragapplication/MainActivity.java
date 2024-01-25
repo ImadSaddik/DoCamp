@@ -86,17 +86,6 @@ public class MainActivity extends AppCompatActivity {
         setActionButtonsListeners();
         handleUserQuery.swapBetweenUploadAndSend();
         handleUserQuery.setupSendQueryButtonListener();
-
-        for (int i = 0; i < 20; i++) {
-            populateChatBody();
-        }
-    }
-
-    private void populateChatBody() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.chat_message_block, null);
-
-        chatBodyContainer.addView(view);
     }
 
     private void instantiateViews() {
@@ -156,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
         handleUserQuery = new HandleUserQuery(
                 queryEditText,
                 uploadFilesButton,
-                sendQueryButton
+                sendQueryButton,
+                this
         );
     }
 
@@ -228,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
                         processFilesButton.setEnabled(true);
 
                         Toast.makeText(this, "Finished processing files!", Toast.LENGTH_SHORT).show();
-                        databaseHelper.numberOfEntriesInEachTable(this);
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();

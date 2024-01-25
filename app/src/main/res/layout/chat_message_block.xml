@@ -20,7 +20,7 @@
             app:srcCompat="@drawable/circle_button" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/userAgentNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/dateTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -40,7 +40,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/userAgentMessageTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

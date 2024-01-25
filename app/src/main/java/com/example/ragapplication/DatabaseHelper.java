@@ -141,57 +141,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert("Embedding", null, contentValues);
     }
 
-    public void logEmbeddingTable(Activity activity) {
+    public Cursor getEmbeddingRows(int roomId) {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        String query = "SELECT * FROM Embedding";
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Log.d("Chunk", cursor.getString(1));
-                Log.d("Vector Representation", cursor.getString(2));
-                Log.d("Room ID", String.valueOf(cursor.getInt(3)));
-                Log.d("File ID", String.valueOf(cursor.getInt(4)));
-                Log.d("Created At", cursor.getString(5));
-            } while (cursor.moveToNext());
-        }
+        String query = "SELECT Chunk, Vector_Representation FROM Embedding WHERE Room_ID = " + roomId;
+        return sqLiteDatabase.rawQuery(query, null);
     }
 
-    public void numberOfEntriesInEachTable(Activity activity) {
-        int numberOfEntriesInEmbeddingTable = 0;
-        int numberOfEntriesInRoomTable = 0;
-        int numberOfEntriesInChatHistoryTable = 0;
-        int numberOfEntriesInFilesTable = 0;
-
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-
-        String query = "SELECT COUNT(*) FROM Embedding";
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            numberOfEntriesInEmbeddingTable = cursor.getInt(0);
-        }
-
-        query = "SELECT COUNT(*) FROM Room";
-        cursor = sqLiteDatabase.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            numberOfEntriesInRoomTable = cursor.getInt(0);
-        }
-
-        query = "SELECT COUNT(*) FROM Chat_History";
-        cursor = sqLiteDatabase.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            numberOfEntriesInChatHistoryTable = cursor.getInt(0);
-        }
-
-        query = "SELECT COUNT(*) FROM Files";
-        cursor = sqLiteDatabase.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            numberOfEntriesInFilesTable = cursor.getInt(0);
-        }
-
-        Log.d("Embedding Table", String.valueOf(numberOfEntriesInEmbeddingTable));
-        Log.d("Room Table", String.valueOf(numberOfEntriesInRoomTable));
-        Log.d("Chat History Table", String.valueOf(numberOfEntriesInChatHistoryTable));
-        Log.d("Files Table", String.valueOf(numberOfEntriesInFilesTable));
+    public void insertRowInChatHistory(int roomId, String userQuery, String modelResponse) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Room_ID", roomId);
+        contentValues.put("User_Query", userQuery);
+        contentValues.put("Model_Response", modelResponse);
+        db.insert("Chat_History", null, contentValues);
     }
 }
