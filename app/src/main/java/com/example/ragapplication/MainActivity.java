@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         roomNameHandler.setRoomNameListeners();
 
         handleLeftNavigationDrawer.setNewRoomButtonListener();
+        handleLeftNavigationDrawer.setSettingsButtonListener();
         handleLeftNavigationDrawer.populateTheBodyWithRooms();
 
         setActionButtonsListeners();

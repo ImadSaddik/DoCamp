@@ -19,4 +19,6 @@
     <string name="create_new_room">Create new room</string>
     <string name="no_room_found">No room found, please create a new one, upload files and start the chat.</string>
     <string name="default_room_name">Untitled</string>
+    <string name="actions">Actions</string>
+    <string name="settings">Settings</string>
 </resources>

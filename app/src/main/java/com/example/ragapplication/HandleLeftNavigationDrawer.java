@@ -2,6 +2,7 @@ package com.example.ragapplication;
 
 import android.animation.AnimatorInflater;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.text.TextUtils;
 import android.view.View;
@@ -97,7 +98,7 @@ public class HandleLeftNavigationDrawer {
         TextView dayTextView = new TextView(this.activity);
         dayTextView.setText(createdAt);
         dayTextView.setTextSize(20);
-        dayTextView.setPadding(0, 20, 0, 20);
+        dayTextView.setPadding(0, 0, 0, 20);
         dayTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto_bold));
 
         return dayTextView;
@@ -306,5 +307,15 @@ public class HandleLeftNavigationDrawer {
                 System.out.println("One or more column names do not exist in the FilesHistory table.");
             }
         }
+    }
+
+    public void setSettingsButtonListener() {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout settingsButton = leftHeaderView.findViewById(R.id.settingsLiearLayout);
+
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this.activity, SettingsActivity.class);
+            this.activity.startActivity(intent);
+        });
     }
 }
