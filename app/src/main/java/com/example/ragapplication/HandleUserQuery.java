@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -59,7 +61,7 @@ public class HandleUserQuery {
         sendQueryButton.setOnClickListener(v -> {
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
-                populateChatBody("You", query, Instant.now().toString().substring(0, 10));
+                populateChatBody("You", query, getDate());
 
                 EmbeddingModel embeddingModel = new EmbeddingModel();
                 String embeddedQueryAsString = embeddingModel.getEmbedding(query).join();
@@ -86,9 +88,7 @@ public class HandleUserQuery {
                         DatabaseHelper databaseHelper = new DatabaseHelper(activity);
                         databaseHelper.insertRowInChatHistory(MainActivity.ROOM_ID, query, response);
 
-                        Instant instant = Instant.now();
-                        String date = instant.toString().substring(0, 10);
-                        populateChatBody("DocGPT", response, date);
+                        populateChatBody("DocGPT", response, getDate());
                         Log.d("GeminiResponse", response);
                     }
 
@@ -102,7 +102,14 @@ public class HandleUserQuery {
         });
     }
 
-    private void populateChatBody(String userName, String message, String date) {
+    private String getDate() {
+        Instant instant = Instant.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd:HH-mm").withZone(ZoneId.systemDefault());
+
+        return formatter.format(instant);
+    }
+
+    public void populateChatBody(String userName, String message, String date) {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.chat_message_block, null);
 

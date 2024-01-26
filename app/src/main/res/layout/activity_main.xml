@@ -145,8 +145,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/left_navigation_drawer_header"
-        app:menu="@menu/left_drawer_menu" />
+        app:headerLayout="@layout/left_navigation_drawer_header" />
 
     <!-- Right Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView

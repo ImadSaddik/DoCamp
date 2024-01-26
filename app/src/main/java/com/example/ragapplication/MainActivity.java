@@ -1,15 +1,12 @@
 package com.example.ragapplication;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -50,15 +47,16 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton uploadFilesButton, sendQueryButton;
     private Button processFilesButton;
     private ProgressBar processingTextProgressBar;
-    private LinearLayout processingTextProgressContainer, chatBodyContainer;
+    private LinearLayout processingTextProgressContainer;
     private TextInputEditText queryEditText;
     private TextView roomNameTextView, processingTextProgressDescription;
     private RelativeLayout roomNameBackground;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase sqLiteDatabase;
-    private Map<String, Uri> filesUriStore;
+    public static Map<String, Uri> filesUriStore;
     private EmbeddingModel embeddingModel;
     private HandleRightNavigationDrawer handleRightNavigationDrawer;
+    private HandleLeftNavigationDrawer handleLeftNavigationDrawer;
     private HandleNavigationDrawersVisibility handleNavigationDrawers;
     private RoomNameHandler roomNameHandler;
     private HandleUserQuery handleUserQuery;
@@ -83,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         handleNavigationDrawers.setNavigationDrawerListeners();
         roomNameHandler.setRoomNameListeners();
 
+        handleLeftNavigationDrawer.setNewRoomButtonListener();
+        handleLeftNavigationDrawer.populateTheBodyWithRooms();
+
         setActionButtonsListeners();
         handleUserQuery.swapBetweenUploadAndSend();
         handleUserQuery.setupSendQueryButtonListener();
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         sendQueryButton = findViewById(R.id.sendQueryButton);
         roomNameTextView = findViewById(R.id.roomNameTextView);
         roomNameBackground = findViewById(R.id.roomNameBackground);
-        chatBodyContainer = findViewById(R.id.chatBodyContainer);
         queryEditText = findViewById(R.id.queryEditText);
 
         View rightHeaderView = rightNavigationView.getHeaderView(0);
@@ -130,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
                 this,
                 filesUriStore
         );
+        handleLeftNavigationDrawer = new HandleLeftNavigationDrawer(
+                leftNavigationView,
+                this,
+                drawerLayout
+        );
         handleNavigationDrawers = new HandleNavigationDrawersVisibility(
                 leftNavigationDrawerIcon,
                 rightNavigationDrawerIcon,
@@ -150,7 +155,27 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private void createRoom() {
+    public DrawerLayout getDrawerLayout() {
+        return drawerLayout;
+    }
+
+    public NavigationView getLeftNavigationView() {
+        return leftNavigationView;
+    }
+
+    public TextInputEditText getQueryEditText() {
+        return queryEditText;
+    }
+
+    public HandleUserQuery getHandleUserQuery() {
+        return handleUserQuery;
+    }
+
+    public HandleRightNavigationDrawer getHandleRightNavigationDrawer() {
+        return handleRightNavigationDrawer;
+    }
+
+    public void createRoom() {
         setRoomID();
 
         String roomName = roomNameTextView.getText().toString();
@@ -158,13 +183,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRoomID() {
-        int roomTableSize = databaseHelper.getRoomTableSize();
-        if (roomTableSize == -1) {
+        int maxRoomID = databaseHelper.getMaxRoomID();
+        if (maxRoomID == -1) {
             ROOM_ID = 1;
         } else {
-            ROOM_ID = roomTableSize + 1;
+            ROOM_ID = maxRoomID + 1;
         }
-        Log.d("Room ID", String.valueOf(ROOM_ID));
     }
 
     @Override
@@ -218,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
                         processFilesButton.setEnabled(true);
 
                         Toast.makeText(this, "Finished processing files!", Toast.LENGTH_SHORT).show();
+                        filesUriStore.clear();
+                        handleLeftNavigationDrawer.refreshLeftNavigationDrawer();
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -242,12 +268,14 @@ public class MainActivity extends AppCompatActivity {
                 Uri fileUri = data.getData();
                 String fileName = removeExtension(getFileName(fileUri));
                 String mimeType = getContentResolver().getType(fileUri);
+                int fileId = databaseHelper.getFileId(fileName, FileUtilities.getFileType(mimeType));
 
-                if (filesUriStore.containsKey(fileName)) {
+                if (filesUriStore.containsKey(fileName) || fileId == ROOM_ID) {
                     Toast.makeText(this, "File already added!", Toast.LENGTH_SHORT).show();
                 } else {
                     filesUriStore.put(fileName, fileUri);
-                    handleRightNavigationDrawer.addFilesToNavigationDrawer(mimeType, fileName);
+                    String fileType = FileUtilities.getFileType(mimeType);
+                    handleRightNavigationDrawer.addFilesToNavigationDrawer(fileType, fileName);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

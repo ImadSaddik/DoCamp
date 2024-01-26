@@ -12,7 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class RoomNameHandler {
@@ -41,6 +43,8 @@ public class RoomNameHandler {
         View view = inflater.inflate(R.layout.room_name_dialog, null);
 
         TextInputEditText editText = view.findViewById(R.id.roomNameEditText);
+        editText.setText(this.roomNameTextView.getText().toString());
+
         Button cancelButton = view.findViewById(R.id.cancelButton);
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
@@ -72,7 +76,21 @@ public class RoomNameHandler {
             DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
             databaseHelper.setRoomName(newText, MainActivity.ROOM_ID);
 
+            updateLeftNavigationDrawer();
             dialog.dismiss();
         });
+    }
+
+    private void updateLeftNavigationDrawer() {
+        MainActivity mainActivity = (MainActivity) this.activity;
+        DrawerLayout drawerLayout = mainActivity.getDrawerLayout();
+        NavigationView leftNavigationView = mainActivity.getLeftNavigationView();
+
+        HandleLeftNavigationDrawer handleLeftNavigationDrawer = new HandleLeftNavigationDrawer(
+                leftNavigationView,
+                this.activity,
+                drawerLayout
+        );
+        handleLeftNavigationDrawer.refreshLeftNavigationDrawer();
     }
 }

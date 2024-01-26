@@ -25,10 +25,10 @@ public class HandleRightNavigationDrawer {
         this.filesUriStore = filesUriStore;
     }
 
-    public void addFilesToNavigationDrawer(String mimeType, String fileName) {
-        if ("application/pdf".equals(mimeType)) {
+    public void addFilesToNavigationDrawer(String fileType, String fileName) {
+        if (fileType.equals("pdf")) {
             addFileToContainer(fileName, R.id.linearLayoutPDFContainer);
-        } else if ("text/plain".equals(mimeType)) {
+        } else if (fileType.equals("txt")) {
             addFileToContainer(fileName, R.id.linearLayoutTxtContainer);
         } else {
             Toast.makeText(this.activity, "Unsupported file type!", Toast.LENGTH_SHORT).show();
