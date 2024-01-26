@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="safety_settings_items">
+        <item>NONE</item>
+        <item>UNSPECIFIED</item>
+        <item>LOW_AND_ABOVE</item>
+        <item>MEDIUM_AND_ABOVE</item>
+        <item>ONLY_HIGH</item>
+    </string-array>
+</resources>
