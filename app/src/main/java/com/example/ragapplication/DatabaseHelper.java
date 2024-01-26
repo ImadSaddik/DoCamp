@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -140,6 +141,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             int fileId = cursor.getInt(0);
             return fileId;
+        }
+
+        return -1;
+    }
+
+    public int getFileCountInRoom(int roomId) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM Files WHERE Room_ID = " + roomId;
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            int count = cursor.getInt(0);
+            return count;
         }
 
         return -1;

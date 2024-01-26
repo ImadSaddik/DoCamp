@@ -44,18 +44,17 @@ public class HandleUserQuery {
         View rootView = activity.findViewById(R.id.chatHistoryBody);
 
         rootView.setOnTouchListener((v, event) -> {
-            if (!(v instanceof TextInputEditText) && isSoftKeyboardVisible) {
-                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                View focusedView = activity.getCurrentFocus();
-                if (focusedView != null) {
-                    inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    focusedView.clearFocus();
-                    isSoftKeyboardVisible = false;
-                }
-            }
-
-            if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 v.performClick();
+                if (!(v instanceof TextInputEditText) && isSoftKeyboardVisible) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    View focusedView = activity.getCurrentFocus();
+                    if (focusedView != null) {
+                        inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        focusedView.clearFocus();
+                        isSoftKeyboardVisible = false;
+                    }
+                }
             }
 
             return false;
@@ -89,6 +88,19 @@ public class HandleUserQuery {
 
     public void setupSendQueryButtonListener() {
         sendQueryButton.setOnClickListener(v -> {
+            DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
+            int fileCountInRoom = databaseHelper.getFileCountInRoom(MainActivity.ROOM_ID);
+
+            if (fileCountInRoom == 0) {
+                populateChatBody(
+                        "DocGPT",
+                        "Please upload a file first, or wait for the processing job to complete!",
+                        getDate()
+                );
+                queryEditText.setText("");
+                return;
+            }
+
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
                 populateChatBody("You", query, getDate());
@@ -119,6 +131,7 @@ public class HandleUserQuery {
                         databaseHelper.insertRowInChatHistory(MainActivity.ROOM_ID, query, response);
 
                         populateChatBody("DocGPT", response, getDate());
+                        queryEditText.setText("");
                         Log.d("GeminiResponse", response);
                     }
 
@@ -127,8 +140,8 @@ public class HandleUserQuery {
                         throwable.printStackTrace();
                     }
                 });
-            } else {
             }
+
         });
     }
 
