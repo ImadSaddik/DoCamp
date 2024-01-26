@@ -6,10 +6,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -24,12 +27,39 @@ public class HandleUserQuery {
     private TextInputEditText queryEditText;
     private ImageButton uploadFilesButton, sendQueryButton;
     private Activity activity;
+    private boolean isSoftKeyboardVisible = false;
 
     public HandleUserQuery(TextInputEditText queryEditText, ImageButton uploadFilesButton, ImageButton sendQueryButton, Activity activity) {
         this.queryEditText = queryEditText;
         this.uploadFilesButton = uploadFilesButton;
         this.sendQueryButton = sendQueryButton;
         this.activity = activity;
+
+        this.queryEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            isSoftKeyboardVisible = true;
+        });
+    }
+
+    public void hideKeyboardWhenClickingOutside() {
+        View rootView = activity.findViewById(R.id.chatHistoryBody);
+
+        rootView.setOnTouchListener((v, event) -> {
+            if (!(v instanceof TextInputEditText) && isSoftKeyboardVisible) {
+                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                View focusedView = activity.getCurrentFocus();
+                if (focusedView != null) {
+                    inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    focusedView.clearFocus();
+                    isSoftKeyboardVisible = false;
+                }
+            }
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                v.performClick();
+            }
+
+            return false;
+        });
     }
 
     public void swapBetweenUploadAndSend() {

@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         handleLeftNavigationDrawer.populateTheBodyWithRooms();
 
         setActionButtonsListeners();
+        handleUserQuery.hideKeyboardWhenClickingOutside();
         handleUserQuery.swapBetweenUploadAndSend();
         handleUserQuery.setupSendQueryButtonListener();
     }
