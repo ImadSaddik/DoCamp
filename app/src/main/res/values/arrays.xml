@@ -7,4 +7,10 @@
         <item>MEDIUM_AND_ABOVE</item>
         <item>ONLY_HIGH</item>
     </string-array>
+
+    <string-array name="theme_settings_items">
+        <item>System</item>
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>
 </resources>

@@ -260,8 +260,8 @@ public class HandleLeftNavigationDrawer {
 
                 MainActivity mainActivity = (MainActivity) this.activity;
                 HandleUserQuery handleUserQuery = mainActivity.getHandleUserQuery();
-                handleUserQuery.populateChatBody("You", userQuery, date);
-                handleUserQuery.populateChatBody("DocGPT", modelResponse, date);
+                handleUserQuery.populateChatBody(SettingsStore.userName, userQuery, date);
+                handleUserQuery.populateChatBody(SettingsStore.modelName, modelResponse, date);
             } else {
                 System.out.println("One or more column names do not exist in the ChatHistory table.");
             }

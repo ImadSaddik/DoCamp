@@ -103,7 +103,7 @@ public class HandleUserQuery {
 
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
-                populateChatBody("You", query, getDate());
+                populateChatBody(SettingsStore.userName, query, getDate());
 
                 EmbeddingModel embeddingModel = new EmbeddingModel();
                 String embeddedQueryAsString = embeddingModel.getEmbedding(query).join();

@@ -74,14 +74,14 @@ public class GeminiPro {
     }
 
     private GenerativeModelFutures getModel() {
-        String apikey = BuildConfig.apiKey;
+        String apikey = SettingsStore.apiKey;
         SafetySetting harassmentSafety = new SafetySetting(HarmCategory.HARASSMENT,
-                BlockThreshold.ONLY_HIGH);
+                getBlockThreshold(SettingsStore.safetySettings));
 
         GenerationConfig.Builder configBuilder = new GenerationConfig.Builder();
-        configBuilder.temperature = 0.9f;
-        configBuilder.topK = 16;
-        configBuilder.topP = 0.1f;
+        configBuilder.temperature = SettingsStore.temperature;
+        configBuilder.topK = SettingsStore.topK;
+        configBuilder.topP = SettingsStore.topP;
         GenerationConfig generationConfig = configBuilder.build();
 
         GenerativeModel gm = new GenerativeModel(
@@ -92,5 +92,22 @@ public class GeminiPro {
         );
 
         return GenerativeModelFutures.from(gm);
+    }
+
+    private BlockThreshold getBlockThreshold(String safetySetting) {
+        switch (safetySetting) {
+            case "ONLY_HIGH":
+                return BlockThreshold.ONLY_HIGH;
+            case "MEDIUM_AND_ABOVE":
+                return BlockThreshold.MEDIUM_AND_ABOVE;
+            case "LOW_AND_ABOVE":
+                return BlockThreshold.LOW_AND_ABOVE;
+            case "UNSPECIFIED":
+                return BlockThreshold.UNSPECIFIED;
+            case "NONE":
+                return BlockThreshold.NONE;
+            default:
+                return BlockThreshold.ONLY_HIGH;
+        }
     }
 }

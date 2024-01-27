@@ -39,7 +39,10 @@ public class FileProcessor {
 
             CompletableFuture<String> resultFuture = textExtractorFromFile.extractTextFromFile(fileUri, inputStream);
             EmbeddingModel embeddingModel = new EmbeddingModel();
-            CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(1000, 100);
+            CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(
+                    SettingsStore.chunkSize,
+                    SettingsStore.overlapSize
+            );
 
             resultFuture.thenAccept(result -> {
                 String[] chunks = characterTextSplitter.getChunksFromText(result);

@@ -10,104 +10,202 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_border"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <ImageButton
+            android:id="@+id/backToHomeButton"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            app:srcCompat="@drawable/back_icon" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto"
+            android:text="@string/settings"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/saveSettingsButton"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            app:srcCompat="@drawable/save_icon" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bottom_border"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="20dp">
 
-            <ImageView
-                android:id="@+id/backToHomeButton"
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                app:srcCompat="@drawable/back_icon" />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto"
-                android:text="@string/settings"
-                android:textSize="24sp" />
-
-            <ImageView
-                android:id="@+id/saveSettingsButton"
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                app:srcCompat="@drawable/save_icon" />
-
-        </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <LinearLayout
+                android:id="@+id/authenticationSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/authentication_section"
+                    android:textSize="20sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@drawable/key_icon" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/apiKeyLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/apiKeyInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/api_key" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/api_key"
+                            android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/apiKeyHelperText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/api_key_helper_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/visualPreferencesSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/visual_preferences_section"
+                    android:textSize="20sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="16dp"
+                        app:srcCompat="@drawable/theme_mode_icon" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/themeLayout"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/themeDropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/theme_settings"
+                            android:inputType="none"
+                            app:simpleItems="@array/theme_settings_items" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/userModelSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/user_model_section"
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@drawable/user_icon" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/userNameLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/userNameInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/user_name_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/user_name_placeholder"
+                            android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/user_name_helper_text"
+                    android:textSize="12sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -117,222 +215,319 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@color/transparent" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/modelNameLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/modelNameInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/model_name_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/model_name_placeholder"
+                            android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/model_name_helper_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fileProcessingSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/file_processing_section"
+                    android:textSize="20sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="24dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
+                        android:id="@+id/fileIconImage"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@drawable/file_icon" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/chunkSizeLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/chunkSizeInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/chunk_size_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/chunk_size_placeholder"
+                            android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/chunk_size_helper_text"
+                    android:textSize="12sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@color/transparent" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/overlapSizeLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/overlapSizeInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/overlap_size_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/overlap_size_placeholder"
+                            android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <Switch
-                    android:id="@+id/streamSwitch"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
-                    android:text="@string/stream_option"
-                    android:textSize="16sp" />
+                    android:text="@string/overlap_size_helper_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-                <Switch
-                    android:id="@+id/themeSwitch"
+            <LinearLayout
+                android:id="@+id/modelHyperparametersSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
-                    android:text="@string/dark_light_mode"
-                    android:textSize="16sp" />
+                    android:text="@string/model_hyperparameters_section"
+                    android:textSize="20sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="24dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@drawable/parameters_icon" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/temperatureLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/temperatureInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/temperature_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/temperature_placeholder"
+                            android:inputType="numberDecimal" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/temperature_helper_text"
+                    android:textSize="12sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@color/transparent" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/topPLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/topPInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/top_p_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/top_p_placeholder"
+                            android:inputType="numberDecimal" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/top_p_helper_text"
+                    android:textSize="12sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@color/transparent" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/topKLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/topKInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/top_k_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/top_k_placeholder"
+                            android:inputType="numberDecimal" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/top_k_helper_text"
+                    android:textSize="12sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@color/transparent" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/maxNewTokensLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/maxNewTokensInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/max_new_tokens_placeholder" />
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/max_new_tokens_placeholder"
+                            android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/max_new_tokens_helper_text"
+                    android:textSize="12sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:srcCompat="@color/transparent" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/safetySettingsLayout"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1">
 
@@ -340,15 +535,33 @@
                             android:id="@+id/safetySettingsDropdown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto"
                             android:hint="@string/safety_settings"
                             android:inputType="none"
                             app:simpleItems="@array/safety_settings_items" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-            </LinearLayout>
-        </ScrollView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/safety_settings_helper_text"
+                    android:textSize="12sp" />
 
-    </LinearLayout>
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/streamSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/stream_option"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

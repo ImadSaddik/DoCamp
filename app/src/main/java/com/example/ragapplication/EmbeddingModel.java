@@ -24,7 +24,7 @@ public class EmbeddingModel {
         return CompletableFuture.supplyAsync(() -> {
             String embeddingValues = "";
             try {
-                String apiKey = BuildConfig.apiKey;
+                String apiKey = SettingsStore.apiKey;
                 String apiURL = "https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key=" + apiKey;
                 String escapedQuery = query.replace("\"", "\\\"").replace("'", "\\'");
                 String content = "{ \"model\": \"models/embedding-001\", \"content\": { \"parts\":[{ \"text\": \"" + escapedQuery + "\"}]}}";

@@ -33,4 +33,22 @@
     <string name="top_p_placeholder">Top P</string>
     <string name="max_new_tokens_placeholder">Max new tokens</string>
     <string name="safety_settings">Safety settings</string>
+    <string name="api_key_helper_text">You can get your API key from <a href="https://makersuite.google.com/app/apikey">Google AI Studio</a> website.</string>
+    <string name="user_name_helper_text">This name will be displayed in the chat in your messages.</string>
+    <string name="model_name_helper_text">This name will be displayed in the chat in the model response.</string>
+    <string name="chunk_size_helper_text">This value will be used to split the text extracted from the file.</string>
+    <string name="overlap_size_helper_text">This is the size of the overlap between chunks.</string>
+    <string name="stream_option_helper_text">If you want to stream the response from the model.</string>
+    <string name="temperature_helper_text">Controls the randomness of the model\'s output. Higher values (e.g., 0.8) make output more creative but less focused, while lower values (e.g., 0.2) make output more deterministic and focused.</string>
+    <string name="top_k_helper_text">Limits the vocabulary used for model sampling to the top k most likely tokens. Higher values (e.g., 50) include more words, while lower values (e.g., 5) make the model more selective.</string>
+    <string name="top_p_helper_text">Limits the vocabulary dynamically based on the cumulative probability of tokens. A higher value (e.g., 0.9) includes more words, while a lower value (e.g., 0.5) makes the model more selective.</string>
+    <string name="max_new_tokens_helper_text">Sets the maximum number of tokens the model can generate in response to a prompt. Useful for limiting the length of generated text.</string>
+    <string name="safety_settings_helper_text">Adjusts safety features to control the appropriateness of generated content. Higher values prioritize safety, while lower values may allow more creative but potentially sensitive outputs.</string>
+    <string name="authentication_section">Authentication settings</string>
+    <string name="user_model_section">User and Model Information</string>
+    <string name="file_processing_section">File processing configuration</string>
+    <string name="model_hyperparameters_section">Model hyperparameters</string>
+    <string name="visual_preferences_section">Visual preferences</string>
+    <string name="theme_settings">Theme settings</string>
+
 </resources>
