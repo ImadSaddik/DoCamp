@@ -50,5 +50,6 @@
     <string name="model_hyperparameters_section">Model hyperparameters</string>
     <string name="visual_preferences_section">Visual preferences</string>
     <string name="theme_settings">Theme settings</string>
+    <string name="prompt">Prompt</string>
 
 </resources>

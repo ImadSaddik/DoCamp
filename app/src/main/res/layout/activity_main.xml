@@ -5,6 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -76,85 +77,97 @@
                 android:orientation="vertical" />
         </ScrollView>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:background="@drawable/top_border"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="bottom">
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@drawable/top_border"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="false"
-                    android:layout_centerVertical="true"
-                    android:layout_weight="5"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/queryEditText"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="hint" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </RelativeLayout>
+                        android:layout_centerInParent="false"
+                        android:layout_centerVertical="true"
+                        android:layout_weight="5"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/queryEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/prompt"
+                            android:maxLines="3" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </RelativeLayout>
 
-                <ImageButton
-                    android:id="@+id/uploadFilesButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerInParent="false"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/circle_button"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/plus_icon" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-                <ImageButton
-                    android:id="@+id/sendQueryButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerInParent="false"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/circle_button"
-                    android:clickable="true"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/send_icon" />
-            </RelativeLayout>
+                    <ImageButton
+                        android:id="@+id/uploadFilesButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/circle_button"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/plus_icon" />
 
-        </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/sendQueryButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/circle_button"
+                        android:clickable="true"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/send_icon" />
+                </RelativeLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
     <!-- Left Navigation Drawer -->
+
+    <!-- Right Navigation Drawer -->
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/leftNavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/left_navigation_drawer_header" />
 
-    <!-- Right Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/rightNavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
+        android:background="@color/white"
         app:headerLayout="@layout/right_navigation_drawer_header" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
