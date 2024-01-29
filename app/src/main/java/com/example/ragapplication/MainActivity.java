@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateViews();
         instantiateObjects();
+        SettingsStore.loadValuesFromSharedPreferences(this);
 //        databaseHelper.onUpgrade(sqLiteDatabase, 1, 1);
         createRoom();
 

@@ -38,23 +38,5 @@ public class SettingsStore {
         maxNewTokens = sharedPreferences.getInt("maxNewTokens", 2048);
         safetySettings = sharedPreferences.getString("safetySettings", "ONLY_HIGH");
         stream = sharedPreferences.getBoolean("stream", false);
-
-        Log.d("SettingsStore", "Loaded settings from SharedPreferences");
-        Log.d("SettingsStore", "apiKey: " + apiKey);
-
-        Log.d("SettingsStore", "userName: " + userName);
-        Log.d("SettingsStore", "modelName: " + modelName);
-
-        Log.d("SettingsStore", "theme: " + theme);
-        Log.d("SettingsStore", "chunkSize: " + chunkSize);
-
-        Log.d("SettingsStore", "overlapSize: " + overlapSize);
-        Log.d("SettingsStore", "temperature: " + temperature);
-
-        Log.d("SettingsStore", "topP: " + topP);
-        Log.d("SettingsStore", "topK: " + topK);
-        Log.d("SettingsStore", "maxNewTokens: " + maxNewTokens);
-        Log.d("SettingsStore", "safetySettings: " + safetySettings);
-        Log.d("SettingsStore", "stream: " + stream);
     }
 }
