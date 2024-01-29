@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -167,6 +168,14 @@ public class HandleUserQuery {
 
         LinearLayout chatBodyContainer = activity.findViewById(R.id.chatBodyContainer);
         chatBodyContainer.addView(view);
+
+        ScrollView scrollView = activity.findViewById(R.id.chatHistoryBody);
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     private List<Double> convertStringToDoubleVector(String stringVector) {
