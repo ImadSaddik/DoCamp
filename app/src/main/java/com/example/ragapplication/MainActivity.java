@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar processingTextProgressBar;
     private LinearLayout processingTextProgressContainer;
     private TextInputEditText queryEditText;
-    private TextView roomNameTextView, processingTextProgressDescription;
+    private TextView roomNameTextView, processingTextProgressDescription, uploadFilesIndicator;
     private RelativeLayout roomNameBackground;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase sqLiteDatabase;
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         roomNameTextView = findViewById(R.id.roomNameTextView);
         roomNameBackground = findViewById(R.id.roomNameBackground);
         queryEditText = findViewById(R.id.queryEditText);
+        uploadFilesIndicator = findViewById(R.id.uploadFilesIndicator);
 
         View rightHeaderView = rightNavigationView.getHeaderView(0);
         processFilesButton = rightHeaderView.findViewById(R.id.processFilesButton);
@@ -247,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, "Finished processing files!", Toast.LENGTH_SHORT).show();
                         filesUriStore.clear();
                         handleLeftNavigationDrawer.refreshLeftNavigationDrawer();
+                        uploadFilesIndicator.setText(getString(R.string.ready_to_chat));
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();

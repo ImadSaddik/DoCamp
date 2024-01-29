@@ -89,6 +89,8 @@ public class HandleUserQuery {
 
     public void setupSendQueryButtonListener() {
         sendQueryButton.setOnClickListener(v -> {
+            removeNoFilesIndicator();
+
             DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
             int fileCountInRoom = databaseHelper.getFileCountInRoom(MainActivity.ROOM_ID);
 
@@ -144,6 +146,11 @@ public class HandleUserQuery {
             }
 
         });
+    }
+
+    private void removeNoFilesIndicator() {
+        TextView uploadFilesIndicator = activity.findViewById(R.id.uploadFilesIndicator);
+        uploadFilesIndicator.setVisibility(View.GONE);
     }
 
     private String getDate() {

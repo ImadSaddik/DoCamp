@@ -172,6 +172,7 @@ public class HandleLeftNavigationDrawer {
             v.setStateListAnimator(AnimatorInflater.loadStateListAnimator(this.activity, R.animator.click_animation));
             MainActivity mainActivity = (MainActivity) this.activity;
 
+            showNoFilesIndicator();
             cleanHomeBody();
             cleanRightNavigationDrawer();
             closeNavigationDrawer();
@@ -182,10 +183,21 @@ public class HandleLeftNavigationDrawer {
         });
     }
 
+    private void showNoFilesIndicator() {
+        TextView uploadFilesIndicator = activity.findViewById(R.id.uploadFilesIndicator);
+        uploadFilesIndicator.setText(activity.getString(R.string.no_file_found));
+        uploadFilesIndicator.setVisibility(View.VISIBLE);
+    }
+
     private void cleanHomeBody() {
         LinearLayout chatBodyContainer = activity.findViewById(R.id.chatBodyContainer);
 
         chatBodyContainer.removeAllViews();
+    }
+
+    private void removeNoFilesIndicator() {
+        TextView uploadFilesIndicator = activity.findViewById(R.id.uploadFilesIndicator);
+        uploadFilesIndicator.setVisibility(View.GONE);
     }
 
     private void cleanRightNavigationDrawer() {
@@ -246,6 +258,7 @@ public class HandleLeftNavigationDrawer {
         DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
         Cursor cursor = databaseHelper.getChatHistory(roomId);
 
+        removeNoFilesIndicator();
         cleanHomeBody();
 
         while (cursor.moveToNext()) {

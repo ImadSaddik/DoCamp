@@ -51,5 +51,7 @@
     <string name="visual_preferences_section">Visual preferences</string>
     <string name="theme_settings">Theme settings</string>
     <string name="prompt">Prompt</string>
+    <string name="please_upload_files">Please upload files to start the chat.</string>
+    <string name="ready_to_chat">Now you are ready to start the chat.</string>
 
 </resources>
