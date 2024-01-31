@@ -16,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class RoomNameHandler {
     private TextView roomNameTextView;
@@ -42,6 +43,7 @@ public class RoomNameHandler {
         LayoutInflater inflater = this.activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.room_name_dialog, null);
 
+        TextInputLayout textInputLayout = view.findViewById(R.id.roomNameEditTextLayout);
         TextInputEditText editText = view.findViewById(R.id.roomNameEditText);
         editText.setText(this.roomNameTextView.getText().toString());
 
@@ -49,7 +51,7 @@ public class RoomNameHandler {
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
         AlertDialog dialog = getAlertDialog(view);
-        setAlertDialogButtonsListeners(dialog, editText, cancelButton, confirmButton);
+        setAlertDialogButtonsListeners(dialog, textInputLayout, editText, cancelButton, confirmButton);
 
         dialog.show();
     }
@@ -64,20 +66,29 @@ public class RoomNameHandler {
         return dialog;
     }
 
-    private void setAlertDialogButtonsListeners(AlertDialog dialog, TextInputEditText editText, Button cancelButton, Button confirmButton) {
+    private void setAlertDialogButtonsListeners(AlertDialog dialog, TextInputLayout textInputLayout,
+                                                TextInputEditText editText, Button cancelButton, Button confirmButton)
+    {
         cancelButton.setOnClickListener(v -> {
             dialog.dismiss();
         });
 
         confirmButton.setOnClickListener(v -> {
             String newText = editText.getText().toString();
-            roomNameTextView.setText(newText);
 
-            DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
-            databaseHelper.setRoomName(newText, MainActivity.ROOM_ID);
+            if (newText.isEmpty()) {
+                textInputLayout.setErrorEnabled(true);
+                textInputLayout.setError("Room name cannot be empty");
+            } else {
+                textInputLayout.setErrorEnabled(false);
+                roomNameTextView.setText(newText);
 
-            updateLeftNavigationDrawer();
-            dialog.dismiss();
+                DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
+                databaseHelper.setRoomName(newText, MainActivity.ROOM_ID);
+
+                updateLeftNavigationDrawer();
+                dialog.dismiss();
+            }
         });
     }
 

@@ -107,6 +107,7 @@ public class HandleUserQuery {
 
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
+                sendQueryButton.setEnabled(false);
                 populateChatBody(SettingsStore.userName, query, getDate());
 
                 EmbeddingModel embeddingModel = new EmbeddingModel();
@@ -131,6 +132,7 @@ public class HandleUserQuery {
                         "You might find the following context useful to answer the question :\n" +
                         "Context : \n" + context;
 
+                queryEditText.setText("");
                 GeminiProHandler.getResponse(MainActivity.chatModel, prompt, new ResponseCallback() {
                     @Override
                     public void onResponse(String response) {
@@ -138,18 +140,17 @@ public class HandleUserQuery {
                         databaseHelper.insertRowInChatHistory(MainActivity.ROOM_ID, query, response);
 
                         populateChatBody("DocGPT", response, getDate());
-                        queryEditText.setText("");
+                        sendQueryButton.setEnabled(true);
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
                         String errorMessage = "There was an error while processing your request. Please try again.";
                         populateChatBody("DocGPT", errorMessage, getDate());
-                        queryEditText.setText("");
+                        sendQueryButton.setEnabled(true);
                     }
                 });
             }
-
         });
     }
 
@@ -182,12 +183,7 @@ public class HandleUserQuery {
         chatBodyContainer.addView(view);
 
         ScrollView scrollView = activity.findViewById(R.id.chatHistoryBody);
-        scrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(View.FOCUS_DOWN);
-            }
-        });
+        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
 
     private List<Double> convertStringToDoubleVector(String stringVector) {
