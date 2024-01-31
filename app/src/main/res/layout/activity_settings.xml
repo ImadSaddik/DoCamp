@@ -65,7 +65,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/authentication_section"
-                    android:textSize="20sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -111,7 +112,7 @@
                 android:id="@+id/visualPreferencesSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="42dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -120,7 +121,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/visual_preferences_section"
-                    android:textSize="20sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -159,7 +161,7 @@
                 android:id="@+id/userModelSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="42dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -168,7 +170,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/user_model_section"
-                    android:textSize="20sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -252,7 +255,7 @@
                 android:id="@+id/fileProcessingSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="42dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -261,7 +264,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/file_processing_section"
-                    android:textSize="20sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -346,7 +350,7 @@
                 android:id="@+id/modelHyperparametersSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="42dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -355,7 +359,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/model_hyperparameters_section"
-                    android:textSize="20sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

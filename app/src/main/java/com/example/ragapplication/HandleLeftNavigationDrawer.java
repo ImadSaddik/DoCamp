@@ -31,7 +31,7 @@ public class HandleLeftNavigationDrawer {
     private NavigationView leftNavigationView;
     private Activity activity;
     private DrawerLayout drawerLayout;
-    private int selectedRoomId = -1;
+    private LinearLayout selectedRoomRow = null;
 
     public HandleLeftNavigationDrawer(NavigationView leftNavigationView, Activity activity, DrawerLayout drawerLayout) {
         this.leftNavigationView = leftNavigationView;
@@ -69,6 +69,13 @@ public class HandleLeftNavigationDrawer {
 
                 LinearLayout roomRowContainer = getRoomRowContainer(roomName, roomId);
                 roomRowContainer.setOnClickListener(v -> {
+                    if (selectedRoomRow != null) {
+                        selectedRoomRow.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
+                    }
+
+                    selectedRoomRow = roomRowContainer;
+                    roomRowContainer.setBackgroundColor(this.activity.getResources().getColor(R.color.pale_grey));
+
                     MainActivity.ROOM_ID = roomId;
                     loadChatHistory(roomId);
                     loadRoomName(roomId);
@@ -106,7 +113,12 @@ public class HandleLeftNavigationDrawer {
         TextView dayTextView = new TextView(this.activity);
         dayTextView.setText(createdAt);
         dayTextView.setTextSize(16);
-        dayTextView.setPadding(0, UnitConverter.dpInPixels(40), 0, UnitConverter.dpInPixels(10));
+        dayTextView.setPadding(
+                UnitConverter.dpInPixels(16),
+                UnitConverter.dpInPixels(40),
+                0,
+                UnitConverter.dpInPixels(10)
+        );
         dayTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto), Typeface.BOLD);
 
         return dayTextView;
@@ -114,9 +126,13 @@ public class HandleLeftNavigationDrawer {
 
     private LinearLayout getRoomRowContainer(String roomName, int roomId) {
         LinearLayout roomRowContainer = new LinearLayout(this.activity);
-        roomRowContainer.setPadding(0, UnitConverter.dpInPixels(10), 0, UnitConverter.dpInPixels(10));
+        roomRowContainer.setPadding(
+                UnitConverter.dpInPixels(16),
+                UnitConverter.dpInPixels(10),
+                UnitConverter.dpInPixels(16),
+                UnitConverter.dpInPixels(10)
+        );
         roomRowContainer.setGravity(Gravity.CENTER_VERTICAL);
-//        roomRowContainer.setBackgroundColor(this.activity.getResources().getColor(R.color.purple));
 
         TextView roomNameTextView = getRoomNameTextView(roomName);
         ImageButton roomRemoveButton = getRoomRemoveButton();

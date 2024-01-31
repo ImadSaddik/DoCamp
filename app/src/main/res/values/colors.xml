@@ -10,4 +10,5 @@
     <color name="teal">#009688</color>
     <color name="green">#8BC34A</color>
     <color name="transparent">#00000000</color>
+    <color name="pale_grey">#FFE4E4E4</color>
 </resources>
