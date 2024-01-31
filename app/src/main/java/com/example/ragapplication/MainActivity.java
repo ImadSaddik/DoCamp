@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -29,6 +28,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.ai.client.generativeai.java.ChatFutures;
+import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private RoomNameHandler roomNameHandler;
     private HandleUserQuery handleUserQuery;
     private HandleSwipeAndDrawers handleSwipeAndDrawers;
-    private GeminiPro model;
+    public static ChatFutures chatModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        SettingsStore.loadValuesFromSharedPreferences(this);
 
         instantiateViews();
         instantiateObjects();
-        SettingsStore.loadValuesFromSharedPreferences(this);
 //        databaseHelper.onUpgrade(sqLiteDatabase, 1, 1);
         createRoom();
 
@@ -116,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
     private void instantiateObjects() {
         PDFBoxResourceLoader.init(getApplicationContext());
 
-        model = new GeminiPro();
+        GeminiPro geminiPro = new GeminiPro();
+        GenerativeModelFutures generativeModelFutures = geminiPro.getModel();
+        chatModel = generativeModelFutures.startChat();
 
         databaseHelper = new DatabaseHelper(this);
         sqLiteDatabase = databaseHelper.getWritableDatabase();
@@ -158,8 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 queryEditText,
                 uploadFilesButton,
                 sendQueryButton,
-                this,
-                model
+                this
         );
     }
 

@@ -5,19 +5,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.collection.ArraySet;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.ai.client.generativeai.java.GenerativeModelFutures;
+import com.google.ai.client.generativeai.type.Content;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class HandleLeftNavigationDrawer {
@@ -180,6 +184,7 @@ public class HandleLeftNavigationDrawer {
             mainActivity.createRoom();
             resetFileStore();
             resetQueryInput();
+            resetModel(null);
         });
     }
 
@@ -254,9 +259,21 @@ public class HandleLeftNavigationDrawer {
         queryEditText.setText("");
     }
 
+    private void resetModel(List<Content> chatHistory) {
+        GeminiPro geminiPro = new GeminiPro();
+        GenerativeModelFutures generativeModelFutures = geminiPro.getModel();
+
+        if (chatHistory == null) {
+            MainActivity.chatModel = generativeModelFutures.startChat();
+        } else {
+            MainActivity.chatModel = generativeModelFutures.startChat(chatHistory);
+        }
+    }
+
     private void loadChatHistory(int roomId) {
         DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
         Cursor cursor = databaseHelper.getChatHistory(roomId);
+        List<Content> chatHistory = new ArrayList<>();
 
         removeNoFilesIndicator();
         cleanHomeBody();
@@ -275,10 +292,23 @@ public class HandleLeftNavigationDrawer {
                 HandleUserQuery handleUserQuery = mainActivity.getHandleUserQuery();
                 handleUserQuery.populateChatBody(SettingsStore.userName, userQuery, date);
                 handleUserQuery.populateChatBody(SettingsStore.modelName, modelResponse, date);
+
+                chatHistory.add(getContent(userQuery, "user"));
+                chatHistory.add(getContent(modelResponse, "model"));
             } else {
                 System.out.println("One or more column names do not exist in the ChatHistory table.");
             }
         }
+
+        resetModel(chatHistory);
+    }
+
+    private Content getContent(String text, String role) {
+        Content.Builder contentBuilder = new Content.Builder();
+        contentBuilder.setRole(role);
+        contentBuilder.addText(text);
+
+        return contentBuilder.build();
     }
 
     private void loadRoomName(int roomId) {

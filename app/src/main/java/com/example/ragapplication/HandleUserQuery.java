@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -22,23 +21,21 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class HandleUserQuery {
     private TextInputEditText queryEditText;
     private ImageButton uploadFilesButton, sendQueryButton;
     private Activity activity;
     private boolean isSoftKeyboardVisible = false;
-    private GeminiPro model;
+    private GeminiProHandler geminiProBuilder;
 
     public HandleUserQuery(TextInputEditText queryEditText, ImageButton uploadFilesButton,
-                           ImageButton sendQueryButton, Activity activity, GeminiPro model)
+                           ImageButton sendQueryButton, Activity activity)
     {
         this.queryEditText = queryEditText;
         this.uploadFilesButton = uploadFilesButton;
         this.sendQueryButton = sendQueryButton;
         this.activity = activity;
-        this.model = model;
 
         this.queryEditText.setOnFocusChangeListener((v, hasFocus) -> {
             isSoftKeyboardVisible = true;
@@ -134,9 +131,7 @@ public class HandleUserQuery {
                         "You might find the following context useful to answer the question :\n" +
                         "Context : \n" + context;
 
-                Log.d("Prompt", prompt);
-
-                model.getChatResponse(prompt, new ResponseCallback() {
+                GeminiProHandler.getResponse(MainActivity.chatModel, prompt, new ResponseCallback() {
                     @Override
                     public void onResponse(String response) {
                         DatabaseHelper databaseHelper = new DatabaseHelper(activity);
