@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private RoomNameHandler roomNameHandler;
     private HandleUserQuery handleUserQuery;
     private HandleSwipeAndDrawers handleSwipeAndDrawers;
+    private GeminiPro model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
     private void instantiateObjects() {
         PDFBoxResourceLoader.init(getApplicationContext());
 
+        model = new GeminiPro();
+
         databaseHelper = new DatabaseHelper(this);
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
@@ -155,7 +158,8 @@ public class MainActivity extends AppCompatActivity {
                 queryEditText,
                 uploadFilesButton,
                 sendQueryButton,
-                this
+                this,
+                model
         );
     }
 

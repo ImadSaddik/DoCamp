@@ -29,12 +29,16 @@ public class HandleUserQuery {
     private ImageButton uploadFilesButton, sendQueryButton;
     private Activity activity;
     private boolean isSoftKeyboardVisible = false;
+    private GeminiPro model;
 
-    public HandleUserQuery(TextInputEditText queryEditText, ImageButton uploadFilesButton, ImageButton sendQueryButton, Activity activity) {
+    public HandleUserQuery(TextInputEditText queryEditText, ImageButton uploadFilesButton,
+                           ImageButton sendQueryButton, Activity activity, GeminiPro model)
+    {
         this.queryEditText = queryEditText;
         this.uploadFilesButton = uploadFilesButton;
         this.sendQueryButton = sendQueryButton;
         this.activity = activity;
+        this.model = model;
 
         this.queryEditText.setOnFocusChangeListener((v, hasFocus) -> {
             isSoftKeyboardVisible = true;
@@ -112,7 +116,11 @@ public class HandleUserQuery {
                 String embeddedQueryAsString = embeddingModel.getEmbedding(query).join();
                 List<Double> embeddedQuery = convertStringToDoubleVector(embeddedQueryAsString);
 
-                EntriesRetiever entriesRetiever = new EntriesRetiever(embeddedQuery, FunctionChoices.COSINE_SIMILARITY, 5);
+                EntriesRetiever entriesRetiever = new EntriesRetiever(
+                        embeddedQuery,
+                        FunctionChoices.COSINE_SIMILARITY,
+                        5
+                );
                 List<String> topChunks = entriesRetiever.retrieveEntries(activity);
 
                 StringBuilder context = new StringBuilder();
@@ -124,9 +132,10 @@ public class HandleUserQuery {
                         " Try answering the following question :\n" +
                         "Question : " + query + "\n" +
                         "You might find the following context useful to answer the question :\n" +
-                        "Context : " + context.toString();
+                        "Context : \n" + context;
 
-                GeminiPro model = new GeminiPro();
+                Log.d("Prompt", prompt);
+
                 model.getChatResponse(prompt, new ResponseCallback() {
                     @Override
                     public void onResponse(String response) {
@@ -135,12 +144,13 @@ public class HandleUserQuery {
 
                         populateChatBody("DocGPT", response, getDate());
                         queryEditText.setText("");
-                        Log.d("GeminiResponse", response);
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
+                        String errorMessage = "There was an error while processing your request. Please try again.";
+                        populateChatBody("DocGPT", errorMessage, getDate());
+                        queryEditText.setText("");
                     }
                 });
             }
