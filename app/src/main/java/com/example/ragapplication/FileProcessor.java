@@ -14,17 +14,18 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class FileProcessor {
     private Activity activity;
     private CountDownLatch latch;
-    private ProgressBar processingTextProgressBar;
     private TextView processingTextProgressDescription;
 
-    public FileProcessor(Activity activity, CountDownLatch latch, ProgressBar processingTextProgressBar, TextView processingTextProgressDescription) {
+    public FileProcessor(Activity activity, CountDownLatch latch, TextView processingTextProgressDescription)
+    {
         this.activity = activity;
         this.latch = latch;
-        this.processingTextProgressBar = processingTextProgressBar;
         this.processingTextProgressDescription = processingTextProgressDescription;
     }
 
@@ -38,7 +39,7 @@ public class FileProcessor {
             TextExtractorFromFile textExtractorFromFile = new TextExtractorFromFile(this.activity);
 
             CompletableFuture<String> resultFuture = textExtractorFromFile.extractTextFromFile(fileUri, inputStream);
-            EmbeddingModel embeddingModel = new EmbeddingModel();
+            EmbeddingModel embeddingModel = new EmbeddingModel(this.activity);
             CharacterTextSplitter characterTextSplitter = new CharacterTextSplitter(
                     SettingsStore.chunkSize,
                     SettingsStore.overlapSize
@@ -47,7 +48,7 @@ public class FileProcessor {
             resultFuture.thenAccept(result -> {
                 String[] chunks = characterTextSplitter.getChunksFromText(result);
                 embeddingModel.embedChunks(chunks).thenAccept(embeddings -> {
-                    updateProgress(1, textDescription);
+                    updateProgress(textDescription);
                     DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
 
                     for (int i = 0; i < chunks.length; i++) {
@@ -65,7 +66,7 @@ public class FileProcessor {
                 });
             }).exceptionally(ex -> {
                 ex.printStackTrace();
-                updateProgress(1, textDescription);
+                updateProgress(textDescription);
                 return null;
             });
         } catch (IOException e) {
@@ -73,9 +74,8 @@ public class FileProcessor {
         }
     }
 
-    private void updateProgress(int progress, String description) {
+    private void updateProgress(String description) {
         this.activity.runOnUiThread(() -> {
-            this.processingTextProgressBar.incrementProgressBy(progress);
             this.processingTextProgressDescription.setText(description);
         });
         latch.countDown();

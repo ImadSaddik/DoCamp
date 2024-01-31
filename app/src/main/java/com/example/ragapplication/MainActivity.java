@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView leftNavigationDrawerIcon, rightNavigationDrawerIcon;
     private ImageButton uploadFilesButton, sendQueryButton;
     private Button processFilesButton;
-    private ProgressBar processingTextProgressBar;
     private LinearLayout processingTextProgressContainer;
     private TextInputEditText queryEditText;
     private TextView roomNameTextView, processingTextProgressDescription, uploadFilesIndicator;
@@ -109,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         View rightHeaderView = rightNavigationView.getHeaderView(0);
         processFilesButton = rightHeaderView.findViewById(R.id.processFilesButton);
-        processingTextProgressBar = rightHeaderView.findViewById(R.id.processingTextProgressBar);
         processingTextProgressDescription = rightHeaderView.findViewById(R.id.processingTextProgressDescription);
         processingTextProgressContainer = rightHeaderView.findViewById(R.id.processingTextProgressContainer);
     }
@@ -125,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
         filesUriStore = new HashMap<>();
-        embeddingModel = new EmbeddingModel();
+        embeddingModel = new EmbeddingModel(this);
 
         handleSwipeAndDrawers = new HandleSwipeAndDrawers(
                 this,
@@ -229,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
             FileProcessor fileProcessor = new FileProcessor(
                     this,
                     latch,
-                    processingTextProgressBar,
                     processingTextProgressDescription
             );
 
@@ -265,9 +262,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showProgressContainer() {
         processingTextProgressContainer.setVisibility(View.VISIBLE);
-
-        processingTextProgressBar.setMax(filesUriStore.size());
-        processingTextProgressBar.setProgress(0);
     }
 
     @Override

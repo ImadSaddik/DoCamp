@@ -110,7 +110,7 @@ public class HandleUserQuery {
                 sendQueryButton.setEnabled(false);
                 populateChatBody(SettingsStore.userName, query, getDate());
 
-                EmbeddingModel embeddingModel = new EmbeddingModel();
+                EmbeddingModel embeddingModel = new EmbeddingModel(this.activity);
                 String embeddedQueryAsString = embeddingModel.getEmbedding(query).join();
                 List<Double> embeddedQuery = convertStringToDoubleVector(embeddedQueryAsString);
 

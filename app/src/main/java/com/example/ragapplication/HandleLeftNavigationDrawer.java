@@ -4,9 +4,12 @@ import android.animation.AnimatorInflater;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ public class HandleLeftNavigationDrawer {
     private NavigationView leftNavigationView;
     private Activity activity;
     private DrawerLayout drawerLayout;
+    private int selectedRoomId = -1;
 
     public HandleLeftNavigationDrawer(NavigationView leftNavigationView, Activity activity, DrawerLayout drawerLayout) {
         this.leftNavigationView = leftNavigationView;
@@ -101,9 +105,9 @@ public class HandleLeftNavigationDrawer {
     private TextView getDayTextView(String createdAt) {
         TextView dayTextView = new TextView(this.activity);
         dayTextView.setText(createdAt);
-        dayTextView.setTextSize(20);
-        dayTextView.setPadding(0, 0, 0, 20);
-        dayTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto_bold));
+        dayTextView.setTextSize(16);
+        dayTextView.setPadding(0, 80, 0, 40);
+        dayTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto), Typeface.BOLD);
 
         return dayTextView;
     }
@@ -112,6 +116,8 @@ public class HandleLeftNavigationDrawer {
         LinearLayout roomRowContainer = new LinearLayout(this.activity);
         roomRowContainer.setOrientation(LinearLayout.HORIZONTAL);
         roomRowContainer.setPadding(0, 20, 0, 20);
+        roomRowContainer.setGravity(Gravity.CENTER_VERTICAL);
+        roomRowContainer.setBackgroundColor(this.activity.getResources().getColor(R.color.purple));
 
         TextView roomNameTextView = getRoomNameTextView(roomName);
         ImageButton roomRemoveButton = getRoomRemoveButton();
@@ -163,7 +169,15 @@ public class HandleLeftNavigationDrawer {
         ImageButton roomRemoveButton = new ImageButton(this.activity);
         roomRemoveButton.setImageResource(R.drawable.remove_button);
         roomRemoveButton.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
-        roomRemoveButton.setPadding(0, 0, 0, 0);
+        int padding = 20;
+        roomRemoveButton.setPadding(padding, padding, padding, padding);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        roomRemoveButton.setLayoutParams(layoutParams);
 
         return roomRemoveButton;
     }

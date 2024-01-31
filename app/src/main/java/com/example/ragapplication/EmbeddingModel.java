@@ -1,7 +1,9 @@
 package com.example.ragapplication;
 
 
+import android.app.Activity;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
@@ -19,6 +21,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 public class EmbeddingModel {
+    private Activity activity;
+
+    public EmbeddingModel(Activity activity) {
+        this.activity = activity;
+    }
 
     public CompletableFuture<String> getEmbedding(String query) {
         return CompletableFuture.supplyAsync(() -> {
@@ -100,13 +107,21 @@ public class EmbeddingModel {
 
     public CompletableFuture<List<String>> embedChunks(String[] chunks) {
         List<CompletableFuture<String>> futures = new ArrayList<>();
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        for (String chunk : chunks) {
+        for (int i = 0; i < chunks.length; i++) {
+            int finalI = i;
             futures.add(CompletableFuture.supplyAsync(() -> {
                 try {
+                    this.activity.runOnUiThread(() -> {
+                        TextView progressDescription = this.activity.findViewById(R.id.processingTextProgressDescription);
+
+                        String progressText = "Processing chunk " + (finalI + 1) + " of " + chunks.length + "...";
+                        progressDescription.setText(progressText);
+                        Log.d("Embedding progress description", progressText);
+                    });
                     Thread.sleep(1500);
-                    return getEmbedding(chunk).join();
+                    return getEmbedding(chunks[finalI]).join();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
