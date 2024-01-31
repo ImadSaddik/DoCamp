@@ -106,7 +106,7 @@ public class HandleLeftNavigationDrawer {
         TextView dayTextView = new TextView(this.activity);
         dayTextView.setText(createdAt);
         dayTextView.setTextSize(16);
-        dayTextView.setPadding(0, 80, 0, 40);
+        dayTextView.setPadding(0, UnitConverter.dpInPixels(40), 0, UnitConverter.dpInPixels(10));
         dayTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto), Typeface.BOLD);
 
         return dayTextView;
@@ -114,10 +114,9 @@ public class HandleLeftNavigationDrawer {
 
     private LinearLayout getRoomRowContainer(String roomName, int roomId) {
         LinearLayout roomRowContainer = new LinearLayout(this.activity);
-        roomRowContainer.setOrientation(LinearLayout.HORIZONTAL);
-        roomRowContainer.setPadding(0, 20, 0, 20);
+        roomRowContainer.setPadding(0, UnitConverter.dpInPixels(10), 0, UnitConverter.dpInPixels(10));
         roomRowContainer.setGravity(Gravity.CENTER_VERTICAL);
-        roomRowContainer.setBackgroundColor(this.activity.getResources().getColor(R.color.purple));
+//        roomRowContainer.setBackgroundColor(this.activity.getResources().getColor(R.color.purple));
 
         TextView roomNameTextView = getRoomNameTextView(roomName);
         ImageButton roomRemoveButton = getRoomRemoveButton();
@@ -150,7 +149,7 @@ public class HandleLeftNavigationDrawer {
         TextView roomNameTextView = new TextView(this.activity);
         roomNameTextView.setText(roomName);
         roomNameTextView.setTextSize(16);
-        roomNameTextView.setPadding(0, 0, 20, 0);
+        roomNameTextView.setPadding(0, 0, UnitConverter.dpInPixels(10), 0);
         roomNameTextView.setMaxLines(1);
         roomNameTextView.setEllipsize(TextUtils.TruncateAt.END);
         roomNameTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto));
@@ -169,7 +168,8 @@ public class HandleLeftNavigationDrawer {
         ImageButton roomRemoveButton = new ImageButton(this.activity);
         roomRemoveButton.setImageResource(R.drawable.remove_button);
         roomRemoveButton.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
-        int padding = 20;
+
+        int padding = UnitConverter.dpInPixels(10);
         roomRemoveButton.setPadding(padding, padding, padding, padding);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

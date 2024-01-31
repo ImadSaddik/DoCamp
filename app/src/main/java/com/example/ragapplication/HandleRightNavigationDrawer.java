@@ -3,7 +3,9 @@ package com.example.ragapplication;
 import android.app.Activity;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +46,8 @@ public class HandleRightNavigationDrawer {
         }
 
         LinearLayout fileRowLayout = getFileRowLayout();
+        fileRowLayout.setGravity(Gravity.CENTER_VERTICAL);
+
         TextView fileNameTextView = getfileNameTextView(fileName);
         ImageButton removeButton = getRemoveButton(rowsContainer, fileRowLayout, noFileFoundTextView);
 
@@ -69,20 +73,16 @@ public class HandleRightNavigationDrawer {
     private LinearLayout getFileRowLayout() {
         LinearLayout fileRowLayout = new LinearLayout(this.activity);
         fileRowLayout.setOrientation(LinearLayout.HORIZONTAL);
+        fileRowLayout.setPadding(0, UnitConverter.dpInPixels(10), 0, UnitConverter.dpInPixels(10));
+
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        layoutParams.setMargins(0, 0, 0, getPixelValue(8));
         fileRowLayout.setLayoutParams(layoutParams);
 
         return fileRowLayout;
-    }
-
-    private int getPixelValue(int dpValue) {
-        float scale = this.activity.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale);
     }
 
     private TextView getfileNameTextView(String fileName) {
@@ -94,7 +94,7 @@ public class HandleRightNavigationDrawer {
         fileNameTextView.setEllipsize(TextUtils.TruncateAt.END);
         fileNameTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto));
         fileNameTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        fileNameTextView.setPadding(0, 0, getPixelValue(8), 0);
+        fileNameTextView.setPadding(0, 0, UnitConverter.dpInPixels(8), 0);
 
         return fileNameTextView;
     }
@@ -103,11 +103,16 @@ public class HandleRightNavigationDrawer {
         ImageButton removeButton = new ImageButton(this.activity);
 
         removeButton.setImageResource(R.drawable.remove_button);
-        removeButton.setLayoutParams(new LinearLayout.LayoutParams(
-                getPixelValue(20),
-                getPixelValue(20))
+        removeButton.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
+
+        int padding = UnitConverter.dpInPixels(10);
+        removeButton.setPadding(padding, padding, padding, padding);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        removeButton.setBackground(null);
+        removeButton.setLayoutParams(layoutParams);
 
         removeButton.setOnClickListener(v -> {
             String fileName = ((TextView) fileRowLayout.getChildAt(0)).getText().toString();

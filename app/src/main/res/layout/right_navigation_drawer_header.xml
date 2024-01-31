@@ -5,34 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:gravity="bottom"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/usernameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/roboto"
             android:text="@string/right_navigation_drawer_header_title"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:dividerInsetEnd="0dp" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,9 +36,12 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/roboto"
+                android:paddingTop="40dp"
+                android:paddingBottom="10dp"
                 android:text="@string/text_file_title"
-                android:textSize="24sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/linearLayoutTxtContainer"
@@ -63,20 +59,16 @@
                     android:textSize="16sp" />
             </LinearLayout>
 
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:dividerInsetEnd="200dp" />
-
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/roboto"
+                android:paddingTop="40dp"
+                android:paddingBottom="10dp"
                 android:text="@string/pdf_file_title"
-                android:textSize="24sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/linearLayoutPDFContainer"
