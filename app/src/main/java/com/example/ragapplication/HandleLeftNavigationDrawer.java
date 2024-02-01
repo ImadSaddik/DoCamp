@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.collection.ArraySet;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -389,6 +389,34 @@ public class HandleLeftNavigationDrawer {
         settingsButton.setOnClickListener(v -> {
             Intent intent = new Intent(this.activity, SettingsActivity.class);
             this.activity.startActivity(intent);
+        });
+    }
+
+    public void setBackUpDataBaseButtonListener() {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout backUpDataBaseButton = leftHeaderView.findViewById(R.id.backUpDBLayout);
+
+        backUpDataBaseButton.setOnClickListener(v -> {
+            DatabaseUtils.triggerSaveDatabase(this.activity);
+        });
+    }
+
+    public void setRestoreDatabaseButtonListener() {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout restoreDatabaseButton = leftHeaderView.findViewById(R.id.restoreDBLayout);
+
+        restoreDatabaseButton.setOnClickListener(v -> {
+            DatabaseUtils.triggerLoadDatabase(this.activity);
+        });
+    }
+
+    public void setResetDatabaseButtonListener() {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout resetDatabaseButton = leftHeaderView.findViewById(R.id.resetDBLayout);
+
+        resetDatabaseButton.setOnClickListener(v -> {
+            DatabaseUtils.resetDatabase(this.activity);
+            refreshLeftNavigationDrawer();
         });
     }
 }

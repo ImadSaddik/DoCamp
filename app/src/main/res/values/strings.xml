@@ -53,5 +53,8 @@
     <string name="prompt">Prompt</string>
     <string name="please_upload_files">Please upload files to start the chat.</string>
     <string name="ready_to_chat">Now you are ready to start the chat.</string>
+    <string name="backup_database">Backup database</string>
+    <string name="restore_database">Restore database</string>
+    <string name="reset_database">Reset database</string>
 
 </resources>

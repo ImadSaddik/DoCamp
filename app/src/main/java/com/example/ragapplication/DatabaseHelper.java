@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "RAG_Database";
+    public static final String DATABASE_NAME = "RAG_Database";
     private static final int DATABASE_VERSION = 1;
 
     public DatabaseHelper(Context context) {

@@ -6,12 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +34,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateViews();
         instantiateObjects();
-//        databaseHelper.onUpgrade(sqLiteDatabase, 1, 1);
         createRoom();
 
         handleNavigationDrawers.setNavigationDrawerListeners();
@@ -85,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
 
         handleLeftNavigationDrawer.setNewRoomButtonListener();
         handleLeftNavigationDrawer.setSettingsButtonListener();
+        handleLeftNavigationDrawer.setBackUpDataBaseButtonListener();
+        handleLeftNavigationDrawer.setRestoreDatabaseButtonListener();
+        handleLeftNavigationDrawer.setResetDatabaseButtonListener();
         handleLeftNavigationDrawer.populateTheBodyWithRooms();
 
         setActionButtonsListeners();
@@ -268,23 +271,42 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            try {
-                Uri fileUri = data.getData();
-                String fileName = removeExtension(getFileName(fileUri));
-                String mimeType = getContentResolver().getType(fileUri);
-                int fileId = databaseHelper.getFileId(fileName, FileUtilities.getFileType(mimeType));
-
-                if (filesUriStore.containsKey(fileName) || fileId == ROOM_ID) {
-                    Toast.makeText(this, "File already added!", Toast.LENGTH_SHORT).show();
-                } else {
-                    filesUriStore.put(fileName, fileUri);
-                    String fileType = FileUtilities.getFileType(mimeType);
-                    handleRightNavigationDrawer.addFilesToNavigationDrawer(fileType, fileName);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+            if (requestCode == 1) {
+                handleFiles(data);
+            } else {
+                handleDatabase(requestCode, data);
             }
+        }
+    }
+
+    private void handleFiles(Intent data) {
+        try {
+            Uri fileUri = data.getData();
+            String fileName = removeExtension(getFileName(fileUri));
+            String mimeType = getContentResolver().getType(fileUri);
+            int fileId = databaseHelper.getFileId(fileName, FileUtilities.getFileType(mimeType));
+
+            if (filesUriStore.containsKey(fileName) || fileId == ROOM_ID) {
+                Toast.makeText(this, "File already added!", Toast.LENGTH_SHORT).show();
+            } else {
+                filesUriStore.put(fileName, fileUri);
+                String fileType = FileUtilities.getFileType(mimeType);
+                handleRightNavigationDrawer.addFilesToNavigationDrawer(fileType, fileName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleDatabase(int requestCode, Intent data) {
+        if (requestCode == DatabaseUtils.REQUEST_CODE_SAVE_DATABASE) {
+            Uri destinationUri = data.getData();
+            DatabaseUtils.saveDatabase(this, destinationUri);
+        } else if (requestCode == DatabaseUtils.REQUEST_CODE_LOAD_DATABASE) {
+            Uri sourceUri = data.getData();
+            DatabaseUtils.loadDatabase(this, sourceUri);
+            handleLeftNavigationDrawer.refreshLeftNavigationDrawer();
         }
     }
 
