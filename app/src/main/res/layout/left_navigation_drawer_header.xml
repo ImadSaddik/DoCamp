@@ -22,6 +22,7 @@
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/roboto"
             android:text="@string/actions"
+            android:textColor="?attr/textPrimaryColor"
             android:textSize="24sp" />
 
         <LinearLayout
@@ -46,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto"
                 android:text="@string/create_new_room"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -71,6 +73,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/roboto"
                 android:text="@string/settings"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -94,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto"
                 android:text="@string/backup_database"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -117,6 +121,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/roboto"
                 android:text="@string/restore_database"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -140,6 +145,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/roboto"
                 android:text="@string/reset_database"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -163,6 +169,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="@string/left_navigation_drawer_header_title"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="24sp" />
 
             <TextView
@@ -173,6 +180,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="@string/no_room_found"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp" />
 
             <LinearLayout

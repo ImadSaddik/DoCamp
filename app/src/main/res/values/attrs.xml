@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="textPrimaryColor" format="color" />
+    <attr name="textPrimaryColorInverted" format="color" />
+
+    <attr name="backgroundColor" format="color" />
+    <attr name="roomNameBackground" format="color" />
+
+    <attr name="iconBackgroundColor" format="color" />
+    <attr name="iconBackgroundColorInverted" format="color" />
+
+    <attr name="borderColor" format="color" />
+
+    <attr name="materialComponentColor" format="color" />
+</resources>

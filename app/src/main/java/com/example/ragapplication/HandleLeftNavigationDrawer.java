@@ -3,9 +3,12 @@ package com.example.ragapplication;
 import android.animation.AnimatorInflater;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +77,7 @@ public class HandleLeftNavigationDrawer {
                     }
 
                     selectedRoomRow = roomRowContainer;
-                    roomRowContainer.setBackgroundColor(this.activity.getResources().getColor(R.color.pale_grey));
+                    roomRowContainer.setBackgroundColor(ThemeUtils.getBackgroundColorBasedOnTheme(R.attr.roomNameBackground, activity));
 
                     MainActivity.ROOM_ID = roomId;
                     loadChatHistory(roomId);
@@ -113,6 +116,7 @@ public class HandleLeftNavigationDrawer {
         TextView dayTextView = new TextView(this.activity);
         dayTextView.setText(createdAt);
         dayTextView.setTextSize(16);
+        dayTextView.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
         dayTextView.setPadding(
                 UnitConverter.dpInPixels(16),
                 UnitConverter.dpInPixels(40),
@@ -156,6 +160,7 @@ public class HandleLeftNavigationDrawer {
             }
 
             refreshLeftNavigationDrawer();
+            Toast.makeText(this.activity, "Room deleted successfully.", Toast.LENGTH_SHORT).show();
         });
 
         return roomRowContainer;
@@ -165,6 +170,7 @@ public class HandleLeftNavigationDrawer {
         TextView roomNameTextView = new TextView(this.activity);
         roomNameTextView.setText(roomName);
         roomNameTextView.setTextSize(16);
+        roomNameTextView.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
         roomNameTextView.setPadding(0, 0, UnitConverter.dpInPixels(10), 0);
         roomNameTextView.setMaxLines(1);
         roomNameTextView.setEllipsize(TextUtils.TruncateAt.END);

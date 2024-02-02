@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/backgroundColor"
     android:orientation="vertical"
     tools:context=".SettingsActivity">
 
@@ -31,6 +31,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/roboto"
             android:text="@string/settings"
+            android:textColor="?attr/textPrimaryColor"
             android:textSize="24sp" />
 
         <ImageButton
@@ -65,8 +66,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/authentication_section"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -93,7 +94,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/api_key"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -105,6 +107,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/api_key_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -121,8 +124,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/visual_preferences_section"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -151,6 +154,7 @@
                             android:fontFamily="@font/roboto"
                             android:hint="@string/theme_settings"
                             android:inputType="none"
+                            android:textColor="?attr/textPrimaryColor"
                             app:simpleItems="@array/theme_settings_items" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -170,8 +174,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/user_model_section"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -198,7 +202,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/user_name_placeholder"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -209,6 +214,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/user_name_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -237,7 +243,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/model_name_placeholder"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -248,6 +255,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/model_name_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -264,8 +272,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/file_processing_section"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -293,7 +301,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/chunk_size_placeholder"
-                            android:inputType="number" />
+                            android:inputType="number"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -304,6 +313,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/chunk_size_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -332,7 +342,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/overlap_size_placeholder"
-                            android:inputType="number" />
+                            android:inputType="number"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -343,6 +354,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/overlap_size_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -359,8 +371,8 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/model_hyperparameters_section"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -379,6 +391,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColorHint="?attr/textPrimaryColor"
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -387,7 +400,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/temperature_placeholder"
-                            android:inputType="numberDecimal" />
+                            android:inputType="numberDecimal"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -398,6 +412,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/temperature_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -426,7 +441,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/top_p_placeholder"
-                            android:inputType="numberDecimal" />
+                            android:inputType="numberDecimal"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -437,6 +453,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/top_p_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -465,7 +482,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
                             android:hint="@string/top_k_placeholder"
-                            android:inputType="numberDecimal" />
+                            android:inputType="numberDecimal"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -476,6 +494,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/top_k_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -515,6 +534,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/max_new_tokens_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -555,6 +575,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/safety_settings_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch

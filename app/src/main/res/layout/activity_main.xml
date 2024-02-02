@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/backgroundColor"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -60,6 +60,7 @@
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:text="@string/untitled_room"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="14sp" />
             </RelativeLayout>
         </RelativeLayout>
@@ -81,7 +82,7 @@
             android:id="@+id/promptRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="?attr/backgroundColor"
             android:gravity="bottom">
 
             <LinearLayout
@@ -104,14 +105,16 @@
                         android:layout_centerVertical="true"
                         android:layout_weight="5"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
+                        android:paddingEnd="16dp"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/queryEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/prompt"
-                            android:maxLines="3" />
+                            android:maxLines="3"
+                            android:textColor="?attr/textPrimaryColor" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </RelativeLayout>
 
@@ -164,6 +167,7 @@
         android:paddingStart="30dp"
         android:paddingEnd="30dp"
         android:text="@string/please_upload_files"
+        android:textColor="?attr/textPrimaryColor"
         android:textSize="16sp" />
 
     <com.google.android.material.navigation.NavigationView
@@ -171,7 +175,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        android:background="?attr/backgroundColor"
         app:headerLayout="@layout/left_navigation_drawer_header" />
 
     <com.google.android.material.navigation.NavigationView
@@ -179,7 +183,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="@color/white"
+        android:background="?attr/backgroundColor"
         app:headerLayout="@layout/right_navigation_drawer_header" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

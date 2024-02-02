@@ -172,12 +172,15 @@ public class HandleUserQuery {
 
         TextView userAgentName = view.findViewById(R.id.userAgentNameTextView);
         userAgentName.setText(userName);
+        userAgentName.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
 
         TextView userAgentMessage = view.findViewById(R.id.userAgentMessageTextView);
         userAgentMessage.setText(message);
+        userAgentMessage.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
 
         TextView dateTextView = view.findViewById(R.id.dateTextView);
         dateTextView.setText(date);
+        dateTextView.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
 
         LinearLayout chatBodyContainer = activity.findViewById(R.id.chatBodyContainer);
         chatBodyContainer.addView(view);

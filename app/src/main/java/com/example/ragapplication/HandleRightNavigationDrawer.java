@@ -90,6 +90,7 @@ public class HandleRightNavigationDrawer {
 
         fileNameTextView.setText(fileName);
         fileNameTextView.setTextSize(16);
+        fileNameTextView.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
         fileNameTextView.setMaxLines(1);
         fileNameTextView.setEllipsize(TextUtils.TruncateAt.END);
         fileNameTextView.setTypeface(this.activity.getResources().getFont(R.font.roboto));

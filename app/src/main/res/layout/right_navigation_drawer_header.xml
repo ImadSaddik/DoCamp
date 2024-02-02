@@ -19,6 +19,7 @@
             android:layout_gravity="start"
             android:fontFamily="@font/roboto"
             android:text="@string/right_navigation_drawer_header_title"
+            android:textColor="?attr/textPrimaryColor"
             android:textSize="24sp" />
 
     </LinearLayout>
@@ -40,6 +41,7 @@
                 android:paddingTop="40dp"
                 android:paddingBottom="10dp"
                 android:text="@string/text_file_title"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -54,8 +56,10 @@
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/no_file_found"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -67,6 +71,7 @@
                 android:paddingTop="40dp"
                 android:paddingBottom="10dp"
                 android:text="@string/pdf_file_title"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -81,8 +86,10 @@
                     android:id="@+id/textView4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/no_file_found"
+                    android:textColor="?attr/textPrimaryColor"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -124,6 +131,7 @@
             android:fontFamily="@font/roboto"
             android:gravity="center"
             android:maxLines="1"
+            android:textColor="?attr/textPrimaryColor"
             android:textSize="16sp" />
     </LinearLayout>
 
