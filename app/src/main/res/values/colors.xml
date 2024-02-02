@@ -17,6 +17,9 @@
     <color name="yellow_300">#FFF176</color>
     <color name="yellow_100">#FFF9C4</color>
 
+    <color name="dark_yellow">#725100</color>
+    <color name="light_yellow">#FBC02D</color>
+
     <color name="transparent">#00000000</color>
 
     <color name="pale_grey_light">#FFE4E4E4</color>

@@ -14,6 +14,9 @@
 
         <item name="materialComponentColor">@color/yellow_700</item>
 
+        <item name="pageIndicatorSelected">@color/yellow_700</item>
+        <item name="pageIndicatorNotSelected">@color/dark_yellow</item>
+
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="circularProgressIndicatorStyle">@style/Widget.App.CircularProgressIndicator</item>
         <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>

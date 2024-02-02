@@ -12,4 +12,7 @@
     <attr name="borderColor" format="color" />
 
     <attr name="materialComponentColor" format="color" />
+
+    <attr name="pageIndicatorSelected" format="color" />
+    <attr name="pageIndicatorNotSelected" format="color" />
 </resources>

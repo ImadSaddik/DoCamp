@@ -2,6 +2,7 @@ package com.example.ragapplication;
 
 import android.util.Log;
 
+import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.ChatFutures;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
