@@ -60,7 +60,9 @@ public class SettingsActivity extends AppCompatActivity {
         loadSettings();
 
         backButton.setOnClickListener(v -> finish());
-        saveButton.setOnClickListener(v -> {saveSettings();});
+        saveButton.setOnClickListener(v -> {
+            saveSettings();
+        });
     }
 
     @Override
@@ -112,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity {
         userNameInput.setText(SettingsStore.userName);
         modelNameInput.setText(SettingsStore.modelName);
 
-        themeDropdown.setText(SettingsStore.theme);
+        themeDropdown.setText(SettingsStore.theme, false);
 
         chunkSizeInput.setText(String.valueOf(SettingsStore.chunkSize));
         overlapSizeInput.setText(String.valueOf(SettingsStore.overlapSize));
@@ -121,7 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
         topPInput.setText(String.valueOf(SettingsStore.topP));
         topKInput.setText(String.valueOf(SettingsStore.topK));
         maxNewTokensInput.setText(String.valueOf(SettingsStore.maxNewTokens));
-        safetySettingsDropdown.setText(SettingsStore.safetySettings);
+        safetySettingsDropdown.setText(SettingsStore.safetySettings, false);
         streamSwitch.setChecked(SettingsStore.stream);
     }
 

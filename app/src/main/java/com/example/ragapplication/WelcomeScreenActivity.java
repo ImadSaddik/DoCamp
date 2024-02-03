@@ -42,9 +42,11 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
 
+        // For debug purposes
 //        SharedPreferences.Editor editor1 = sharedPreferences.edit();
 //        editor1.putBoolean("tutorialDone", false);
 //        editor1.apply();
+        // For debug purposes
 
         if (sharedPreferences.getBoolean("tutorialDone", false)) {
             startActivity(new Intent(this, MainActivity.class));
@@ -132,7 +134,9 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
     }
 
     private void instantiateViews() {
