@@ -1,8 +1,10 @@
 package com.example.ragapplication;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private HandleUserQuery handleUserQuery;
     private HandleSwipeAndDrawers handleSwipeAndDrawers;
     public static ChatFutures chatModel;
+    private NetworkChangeReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new NetworkChangeReceiver();
+        registerReceiver(receiver, filter);
+
         SettingsStore.loadValuesFromSharedPreferences(this);
 
         instantiateViews();
@@ -94,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         handleUserQuery.hideKeyboardWhenClickingOutside();
         handleUserQuery.swapBetweenUploadAndSend();
         handleUserQuery.setupSendQueryButtonListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     private void instantiateViews() {

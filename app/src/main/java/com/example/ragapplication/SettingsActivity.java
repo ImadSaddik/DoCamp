@@ -1,6 +1,8 @@
 package com.example.ragapplication;
 
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
@@ -36,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
             topKLayout, maxNewTokensLayout, safetySettingsLayout, themeLayout;
     private AutoCompleteTextView safetySettingsDropdown, themeDropdown;
     private MaterialSwitch streamSwitch;
+    private NetworkChangeReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,10 @@ public class SettingsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new NetworkChangeReceiver();
+        registerReceiver(receiver, filter);
+
         instantiateViews();
         setHyperLinks();
         SettingsStore.loadValuesFromSharedPreferences(this);
@@ -54,6 +61,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> finish());
         saveButton.setOnClickListener(v -> {saveSettings();});
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     private void instantiateViews() {

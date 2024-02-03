@@ -1,7 +1,13 @@
 package com.example.ragapplication;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -28,6 +34,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     private RelativeLayout page1, page2, page3;
     private LinearLayout checkingAPIKeyLayout;
     private SharedPreferences sharedPreferences;
+    private NetworkChangeReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,10 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new NetworkChangeReceiver();
+        registerReceiver(receiver, filter);
+
         instantiateViews();
 
         next1Button.setOnClickListener(v -> {
@@ -116,6 +127,12 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     private void instantiateViews() {
