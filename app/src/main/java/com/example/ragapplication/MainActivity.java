@@ -77,11 +77,13 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        SettingsStore.loadValuesFromSharedPreferences(this);
+        ThemeManager.changeThemeBasedOnSelection(this);
+
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
         registerReceiver(receiver, filter);
-
-        SettingsStore.loadValuesFromSharedPreferences(this);
 
         instantiateViews();
         instantiateObjects();

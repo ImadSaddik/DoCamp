@@ -1,5 +1,7 @@
 package com.example.ragapplication;
 
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -9,6 +11,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -56,6 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         instantiateViews();
         setHyperLinks();
+        setupDropdowns();
         SettingsStore.loadValuesFromSharedPreferences(this);
         loadSettings();
 
@@ -63,6 +68,12 @@ public class SettingsActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> {
             saveSettings();
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupDropdowns();
     }
 
     @Override
@@ -106,6 +117,26 @@ public class SettingsActivity extends AppCompatActivity {
     private void setHyperLinks() {
         TextView apiKeyHelperText = findViewById(R.id.apiKeyHelperText);
         apiKeyHelperText.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void setupDropdowns() {
+        String[] safetySettings = getResources().getStringArray(R.array.safety_settings_items);
+        String[] themes = getResources().getStringArray(R.array.theme_settings_items);
+
+        ArrayAdapter<String> safetySettingsAdapter = new ArrayAdapter<>(
+                this,
+                com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
+                safetySettings
+        );
+
+        ArrayAdapter<String> themeAdapter = new ArrayAdapter<>(
+                this,
+                com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
+                themes
+        );
+
+        safetySettingsDropdown.setAdapter(safetySettingsAdapter);
+        themeDropdown.setAdapter(themeAdapter);
     }
 
     private void loadSettings() {
@@ -188,6 +219,8 @@ public class SettingsActivity extends AppCompatActivity {
             editor.apply();
 
             SettingsStore.loadValuesFromSharedPreferences(this);
+            ThemeManager.changeThemeBasedOnSelection(this);
+            themeDropdown.clearFocus();
             Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
         }
     }
