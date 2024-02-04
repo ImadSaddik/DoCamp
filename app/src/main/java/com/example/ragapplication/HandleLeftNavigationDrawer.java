@@ -77,7 +77,7 @@ public class HandleLeftNavigationDrawer {
                     }
 
                     selectedRoomRow = roomRowContainer;
-                    roomRowContainer.setBackgroundColor(ThemeUtils.getBackgroundColorBasedOnTheme(R.attr.roomNameBackground, activity));
+                    roomRowContainer.setBackgroundColor(ThemeUtils.getBackgroundColorBasedOnTheme(R.attr.roomSelectedBackground, activity));
 
                     MainActivity.ROOM_ID = roomId;
                     loadChatHistory(roomId);

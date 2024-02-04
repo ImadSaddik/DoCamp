@@ -15,4 +15,6 @@
 
     <attr name="pageIndicatorSelected" format="color" />
     <attr name="pageIndicatorNotSelected" format="color" />
+
+    <attr name="roomSelectedBackground" format="color" />
 </resources>

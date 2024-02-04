@@ -1,7 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.RAGApplication" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/yellow_500</item>
+        <item name="colorPrimary">@color/yellow_900</item>
+
+        <item name="roomSelectedBackground">@color/yellow_900</item>
 
         <item name="textPrimaryColor">@color/white</item>
         <item name="textPrimaryColorInverted">@color/black</item>
@@ -12,11 +14,11 @@
         <item name="iconBackgroundColor">@color/white</item>
         <item name="iconBackgroundColorInverted">@color/black</item>
 
-        <item name="materialComponentColor">@color/yellow_500</item>
+        <item name="materialComponentColor">@color/yellow_900</item>
 
         <item name="borderColor">@color/light_border_color</item>
 
-        <item name="pageIndicatorSelected">@color/yellow_500</item>
+        <item name="pageIndicatorSelected">@color/yellow_900</item>
         <item name="pageIndicatorNotSelected">@color/dark_yellow</item>
 
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
@@ -62,7 +64,7 @@
     </style>
 
     <style name="ThemeOverlay.App.TextInputLayout" parent="">
-        <item name="colorPrimary">@color/yellow_700</item>
+        <item name="colorPrimary">@color/yellow_900</item>
         <item name="editTextStyle">@style/Widget.Material3.TextInputEditText.OutlinedBox</item>
     </style>
 
