@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.time.Instant;
@@ -108,6 +109,7 @@ public class HandleUserQuery {
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
                 sendQueryButton.setEnabled(false);
+                showResponseGenerationProgressBar(true);
                 populateChatBody(SettingsStore.userName, query, getDate());
 
                 EmbeddingModel embeddingModel = new EmbeddingModel(this.activity);
@@ -139,6 +141,7 @@ public class HandleUserQuery {
                         DatabaseHelper databaseHelper = new DatabaseHelper(activity);
                         databaseHelper.insertRowInChatHistory(MainActivity.ROOM_ID, query, response);
 
+                        showResponseGenerationProgressBar(false);
                         populateChatBody("DocGPT", response, getDate());
                         sendQueryButton.setEnabled(true);
                     }
@@ -164,6 +167,16 @@ public class HandleUserQuery {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd:HH-mm").withZone(ZoneId.systemDefault());
 
         return formatter.format(instant);
+    }
+
+    private void showResponseGenerationProgressBar(boolean show) {
+        LinearProgressIndicator responseGenerationProgressBar = activity.findViewById(R.id.responseGenerationProgressBar);
+
+        if (show) {
+            responseGenerationProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            responseGenerationProgressBar.setVisibility(View.GONE);
+        }
     }
 
     public void populateChatBody(String userName, String message, String date) {

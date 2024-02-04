@@ -13,7 +13,6 @@
             <solid android:color="@color/transparent" />
 
             <padding
-                android:bottom="10dp"
                 android:top="10dp" />
         </shape>
     </item>

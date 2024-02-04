@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.RAGApplication" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/yellow_700</item>
+
         <item name="textPrimaryColor">@color/black</item>
         <item name="textPrimaryColorInverted">@color/white</item>
 
@@ -19,6 +21,7 @@
 
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="circularProgressIndicatorStyle">@style/Widget.App.CircularProgressIndicator</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
 
     </style>
@@ -35,13 +38,22 @@
         <item name="colorOnContainer">@color/black</item>
     </style>
 
-    <!-- Theme for progress bar -->
+    <!-- Theme for circular progress bar -->
     <style name="Widget.App.CircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.CircularProgressIndicator</item>
         <item name="trackThickness">20dp</item>
     </style>
 
     <style name="ThemeOverlay.App.CircularProgressIndicator" parent="">
+        <item name="colorPrimary">?attr/materialComponentColor</item>
+    </style>
+
+    <!-- Theme for linear progress bar -->
+    <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.CircularProgressIndicator</item>
+    </style>
+
+    <style name="ThemeOverlay.App.LinearProgressIndicator" parent="">
         <item name="colorPrimary">?attr/materialComponentColor</item>
     </style>
 
@@ -53,7 +65,6 @@
 
     <style name="ThemeOverlay.App.TextInputLayout" parent="">
         <item name="colorPrimary">@color/yellow_700</item>
-<!--        <item name="colorOnSurface">@color/shrine_pink_900</item>-->
         <item name="editTextStyle">@style/Widget.Material3.TextInputEditText.OutlinedBox</item>
     </style>
 
