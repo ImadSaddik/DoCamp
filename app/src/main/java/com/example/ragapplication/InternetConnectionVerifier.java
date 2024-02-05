@@ -6,7 +6,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 
 public class InternetConnectionVerifier {
     private Activity activity;

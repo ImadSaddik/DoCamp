@@ -107,9 +107,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (receiver == null) {
+            receiver = new NetworkChangeReceiver();
+        }
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
     }
 
     private void instantiateViews() {
