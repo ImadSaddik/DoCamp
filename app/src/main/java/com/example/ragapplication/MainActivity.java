@@ -166,10 +166,7 @@ public class MainActivity extends AppCompatActivity {
         filesUriStore = new HashMap<>();
         embeddingModel = new EmbeddingModel(this);
 
-        handleSwipeAndDrawers = new HandleSwipeAndDrawers(
-                this,
-                drawerLayout
-        );
+        handleSwipeAndDrawers = new HandleSwipeAndDrawers(drawerLayout);
         gestureDetector = new GestureDetectorCompat(
                 this,
                 handleSwipeAndDrawers

@@ -1,21 +1,45 @@
 package com.example.ragapplication;
 
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 class HandleSwipeAndDrawers extends GestureDetector.SimpleOnGestureListener {
-    private final MainActivity mainActivity;
-    private DrawerLayout drawerLayout;
+    private final DrawerLayout drawerLayout;
     private static final int SWIPE_THRESHOLD = 100;
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+    private boolean isDrawerFullyClosed = true;
 
-    public HandleSwipeAndDrawers(MainActivity mainActivity, DrawerLayout drawerLayout) {
-        this.mainActivity = mainActivity;
+    public HandleSwipeAndDrawers(DrawerLayout drawerLayout) {
         this.drawerLayout = drawerLayout;
+
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                isDrawerFullyClosed = slideOffset == 0;
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                isDrawerFullyClosed = false;
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                isDrawerFullyClosed = true;
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
     }
 
     @Override
@@ -24,14 +48,17 @@ class HandleSwipeAndDrawers extends GestureDetector.SimpleOnGestureListener {
         float diffY = e2.getY() - e1.getY();
 
         if (Math.abs(diffX) > Math.abs(diffY)) {
-            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD && isAllDrawersClosed()) {
+            boolean isSwipeThresholdReached = Math.abs(diffX) > SWIPE_THRESHOLD;
+            boolean isSwipeVelocityThresholdReached = Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD;
+
+            if (isSwipeThresholdReached && isSwipeVelocityThresholdReached && isDrawerFullyClosed) {
                 if (diffX > 0) {
                     openLeftDrawer();
                 } else {
                     openRightDrawer();
                 }
-                return true;
             }
+            return true;
         }
 
         return false;
@@ -43,9 +70,5 @@ class HandleSwipeAndDrawers extends GestureDetector.SimpleOnGestureListener {
 
     private void openRightDrawer() {
         drawerLayout.openDrawer(GravityCompat.END);
-    }
-
-    private boolean isAllDrawersClosed() {
-        return !drawerLayout.isDrawerOpen(GravityCompat.START) && !drawerLayout.isDrawerOpen(GravityCompat.END);
     }
 }
