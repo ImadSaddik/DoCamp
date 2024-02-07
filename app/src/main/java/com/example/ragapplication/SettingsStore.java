@@ -19,6 +19,7 @@ public class SettingsStore {
     public static int maxNewTokens;
     public static String safetySettings;
     public static String theme;
+    public static String language;
 
     public static void loadValuesFromSharedPreferences(Activity context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", context.MODE_PRIVATE);
@@ -27,6 +28,8 @@ public class SettingsStore {
 
         userName = sharedPreferences.getString("userName", "YOU");
         modelName = sharedPreferences.getString("modelName", "DOCGPT");
+
+        language = sharedPreferences.getString("language", "English");
 
         theme = sharedPreferences.getString("theme", "Light");
 

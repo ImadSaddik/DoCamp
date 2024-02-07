@@ -112,6 +112,57 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/languagesSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/languages_section"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="16dp"
+                        app:srcCompat="@drawable/language_icon" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/languagesLayout"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/languagesDropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/language_settings"
+                            android:inputType="none"
+                            android:textColor="?attr/textPrimaryColor"
+                            app:simpleItems="@array/theme_settings_items" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/visualPreferencesSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

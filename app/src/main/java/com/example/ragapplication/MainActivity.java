@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         SettingsStore.loadValuesFromSharedPreferences(this);
+        LanguageManager.changeAppLanguage(this);
         ThemeManager.changeThemeBasedOnSelection(this);
 
         EdgeToEdge.enable(this);

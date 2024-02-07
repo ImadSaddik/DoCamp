@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:viewportHeight="64" android:viewportWidth="64" android:width="24dp">
+      
+    <path android:fillColor="#00000000" android:pathData="M34.53,14.59s-1.6,18.21 -24,32.78" android:strokeColor="?attr/iconBackgroundColor" android:strokeLineCap="round" android:strokeWidth="3"/>
+      
+    <path android:fillColor="#00000000" android:pathData="M7.35,14.59L41.46,14.59" android:strokeColor="?attr/iconBackgroundColor" android:strokeLineCap="round" android:strokeWidth="3"/>
+      
+    <path android:fillColor="#00000000" android:pathData="M24.4,9.08L24.4,14.59" android:strokeColor="?attr/iconBackgroundColor" android:strokeLineCap="round" android:strokeWidth="3"/>
+      
+    <path android:fillColor="#00000000" android:pathData="M16.76,22.05S25.2,36.8 32,41.33" android:strokeColor="?attr/iconBackgroundColor" android:strokeLineCap="round" android:strokeWidth="3"/>
+      
+    <path android:fillColor="#00000000" android:pathData="M33.55,54.92l10.74,-25a0.89,0.89 0,0 1,1.63 0l10.73,25" android:strokeColor="?attr/iconBackgroundColor" android:strokeLineCap="round" android:strokeWidth="3"/>
+      
+    <path android:fillColor="#00000000" android:pathData="M37.25,46.3L52.96,46.3" android:strokeColor="?attr/iconBackgroundColor" android:strokeLineCap="round" android:strokeWidth="3"/>
+    
+</vector>

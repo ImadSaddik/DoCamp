@@ -19,4 +19,9 @@
         <item>EUCLIDEAN_DISTANCE</item>
         <item>MANHATTAN_DISTANCE</item>
     </string-array>
+
+    <string-array name="languages_items">
+        <item>@string/english_language</item>
+        <item>@string/french_language</item>
+    </string-array>
 </resources>

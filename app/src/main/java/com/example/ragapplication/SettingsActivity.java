@@ -2,8 +2,11 @@ package com.example.ragapplication;
 
 import android.app.UiModeManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Html;
@@ -11,14 +14,19 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
@@ -32,6 +40,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.w3c.dom.Text;
 
+import java.util.Locale;
+
 public class SettingsActivity extends AppCompatActivity {
     private ImageButton backButton, saveButton;
     private TextInputEditText apiKeyInput, userNameInput, modelNameInput,
@@ -40,8 +50,9 @@ public class SettingsActivity extends AppCompatActivity {
     private TextInputLayout apiKeyLayout, userNameLayout, modelNameLayout,
             chunkSizeLayout, overlapSizeLayout, temperatureLayout, topPLayout,
             topKLayout, maxNewTokensLayout, safetySettingsLayout, themeLayout,
-            topKEntriesLayout, similarityFunctionLayout;
-    private AutoCompleteTextView safetySettingsDropdown, themeDropdown, similarityFunctionDropdown;
+            topKEntriesLayout, similarityFunctionLayout, languagesLayout;
+    private AutoCompleteTextView safetySettingsDropdown, themeDropdown, similarityFunctionDropdown,
+            languagesDropdown;
     private NetworkChangeReceiver receiver;
 
     @Override
@@ -118,6 +129,7 @@ public class SettingsActivity extends AppCompatActivity {
         safetySettingsDropdown = findViewById(R.id.safetySettingsDropdown);
         themeDropdown = findViewById(R.id.themeDropdown);
         similarityFunctionDropdown = findViewById(R.id.similarityFunctionDropdown);
+        languagesDropdown = findViewById(R.id.languagesDropdown);
 
         apiKeyLayout = findViewById(R.id.apiKeyLayout);
         userNameLayout = findViewById(R.id.userNameLayout);
@@ -132,6 +144,7 @@ public class SettingsActivity extends AppCompatActivity {
         themeLayout = findViewById(R.id.themeLayout);
         topKEntriesLayout = findViewById(R.id.topKEntriesLayout);
         similarityFunctionLayout = findViewById(R.id.similarityFunctionLayout);
+        languagesLayout = findViewById(R.id.languagesLayout);
     }
 
     private void setHyperLinks() {
@@ -143,28 +156,22 @@ public class SettingsActivity extends AppCompatActivity {
         String[] safetySettings = getResources().getStringArray(R.array.safety_settings_items);
         String[] themes = getResources().getStringArray(R.array.theme_settings_items);
         String[] similarityFunctions = getResources().getStringArray(R.array.similarity_functions_items);
+        String[] languages = getResources().getStringArray(R.array.languages_items);
 
-        ArrayAdapter<String> safetySettingsAdapter = new ArrayAdapter<>(
+        setAdapter(safetySettings, safetySettingsDropdown);
+        setAdapter(themes, themeDropdown);
+        setAdapter(similarityFunctions, similarityFunctionDropdown);
+        setAdapter(languages, languagesDropdown);
+    }
+
+    private void setAdapter(String[] values, AutoCompleteTextView dropdown) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
-                safetySettings
+                values
         );
 
-        ArrayAdapter<String> themeAdapter = new ArrayAdapter<>(
-                this,
-                com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
-                themes
-        );
-
-        ArrayAdapter<String> similarityFunctionAdapter = new ArrayAdapter<>(
-                this,
-                com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
-                similarityFunctions
-        );
-
-        safetySettingsDropdown.setAdapter(safetySettingsAdapter);
-        themeDropdown.setAdapter(themeAdapter);
-        similarityFunctionDropdown.setAdapter(similarityFunctionAdapter);
+        dropdown.setAdapter(adapter);
     }
 
     private void loadSettings() {
@@ -172,6 +179,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         userNameInput.setText(SettingsStore.userName);
         modelNameInput.setText(SettingsStore.modelName);
+
+        languagesDropdown.setText(SettingsStore.language, false);
 
         themeDropdown.setText(SettingsStore.theme, false);
 
@@ -194,6 +203,8 @@ public class SettingsActivity extends AppCompatActivity {
         String userName = userNameInput.getText().toString();
         String modelName = modelNameInput.getText().toString();
 
+        String newLanguage = languagesDropdown.getText().toString();
+
         String themeSettings = themeDropdown.getText().toString();
 
         String chunkSize = chunkSizeInput.getText().toString();
@@ -213,6 +224,8 @@ public class SettingsActivity extends AppCompatActivity {
         boolean isUserNameValid = checkUserNameValidity(userName);
         boolean isModelNameValid = checkModelNameValidity(modelName);
 
+        boolean isLanguageValid = checkLanguageValidity(newLanguage);
+
         boolean isThemeValid = checkThemeValidity(themeSettings);
 
         boolean isChunkSizeValid = checkChunkSizeValidity(chunkSize);
@@ -230,10 +243,11 @@ public class SettingsActivity extends AppCompatActivity {
         if (isApiKeyValid && isUserNameValid && isModelNameValid && isChunkSizeValid
                 && isOverlapSizeValid && isTemperatureValid && isTopPValid &&
                 isTopKValid && isMaxNewTokensValid && isSafetySettingsValid && isThemeValid
-                && isTopKEntriesValid && isSimilarityFunctionValid
+                && isTopKEntriesValid && isSimilarityFunctionValid && isLanguageValid
         ) {
             SharedPreferences sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
+            String oldLanguage = SettingsStore.language;
 
             editor.putString("apiKey", apiKey);
 
@@ -257,10 +271,58 @@ public class SettingsActivity extends AppCompatActivity {
             editor.apply();
 
             SettingsStore.loadValuesFromSharedPreferences(this);
-            ThemeManager.changeThemeBasedOnSelection(this);
+
+            if (!oldLanguage.equals(newLanguage)) {
+                Log.d("Language_LOG", "Language Changed");
+                showLanguageDialog(editor, newLanguage);
+            } else {
+                ThemeManager.changeThemeBasedOnSelection(this);
+            }
+
             themeDropdown.clearFocus();
             Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showLanguageDialog(SharedPreferences.Editor editor, String newLanguage) {
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.language_dialog, null);
+
+        Button cancelButton = view.findViewById(R.id.cancelLanguageButton);
+        Button confirmButton = view.findViewById(R.id.confirmLanguageButton);
+
+        AlertDialog dialog = getAlertDialog(view);
+
+        cancelButton.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        confirmButton.setOnClickListener(v -> {
+            editor.putString("language", newLanguage);
+            editor.apply();
+
+            restartApp();
+        });
+
+        dialog.show();
+    }
+
+    private AlertDialog getAlertDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background_room_dialog);
+
+        return dialog;
+    }
+
+    private void restartApp() {
+        Intent restartIntent = new Intent(getApplicationContext(), MainActivity.class);
+        restartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(restartIntent);
+        finishAffinity();
     }
 
     private boolean checkApiKeyValidity(String apiKey) {
@@ -293,6 +355,17 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         modelNameLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean checkLanguageValidity(String language) {
+        if (language.equals("")) {
+            languagesLayout.setError("Language cannot be empty");
+            languagesLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        languagesLayout.setErrorEnabled(false);
         return true;
     }
 
