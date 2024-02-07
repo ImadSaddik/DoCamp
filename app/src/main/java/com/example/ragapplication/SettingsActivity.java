@@ -36,12 +36,12 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageButton backButton, saveButton;
     private TextInputEditText apiKeyInput, userNameInput, modelNameInput,
             chunkSizeInput, overlapSizeInput, temperatureInput, topPInput,
-            topKInput, maxNewTokensInput;
+            topKInput, maxNewTokensInput, topKEntriesInput;
     private TextInputLayout apiKeyLayout, userNameLayout, modelNameLayout,
             chunkSizeLayout, overlapSizeLayout, temperatureLayout, topPLayout,
-            topKLayout, maxNewTokensLayout, safetySettingsLayout, themeLayout;
-    private AutoCompleteTextView safetySettingsDropdown, themeDropdown;
-    private MaterialSwitch streamSwitch;
+            topKLayout, maxNewTokensLayout, safetySettingsLayout, themeLayout,
+            topKEntriesLayout, similarityFunctionLayout;
+    private AutoCompleteTextView safetySettingsDropdown, themeDropdown, similarityFunctionDropdown;
     private NetworkChangeReceiver receiver;
 
     @Override
@@ -104,8 +104,6 @@ public class SettingsActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backToHomeButton);
         saveButton = findViewById(R.id.saveSettingsButton);
 
-        streamSwitch = findViewById(R.id.streamSwitch);
-
         apiKeyInput = findViewById(R.id.apiKeyInputEditText);
         userNameInput = findViewById(R.id.userNameInputEditText);
         modelNameInput = findViewById(R.id.modelNameInputEditText);
@@ -115,9 +113,11 @@ public class SettingsActivity extends AppCompatActivity {
         topPInput = findViewById(R.id.topPInputEditText);
         topKInput = findViewById(R.id.topKInputEditText);
         maxNewTokensInput = findViewById(R.id.maxNewTokensInputEditText);
+        topKEntriesInput = findViewById(R.id.topKEntriesInputEditText);
 
         safetySettingsDropdown = findViewById(R.id.safetySettingsDropdown);
         themeDropdown = findViewById(R.id.themeDropdown);
+        similarityFunctionDropdown = findViewById(R.id.similarityFunctionDropdown);
 
         apiKeyLayout = findViewById(R.id.apiKeyLayout);
         userNameLayout = findViewById(R.id.userNameLayout);
@@ -130,6 +130,8 @@ public class SettingsActivity extends AppCompatActivity {
         maxNewTokensLayout = findViewById(R.id.maxNewTokensLayout);
         safetySettingsLayout = findViewById(R.id.safetySettingsLayout);
         themeLayout = findViewById(R.id.themeLayout);
+        topKEntriesLayout = findViewById(R.id.topKEntriesLayout);
+        similarityFunctionLayout = findViewById(R.id.similarityFunctionLayout);
     }
 
     private void setHyperLinks() {
@@ -140,6 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void setupDropdowns() {
         String[] safetySettings = getResources().getStringArray(R.array.safety_settings_items);
         String[] themes = getResources().getStringArray(R.array.theme_settings_items);
+        String[] similarityFunctions = getResources().getStringArray(R.array.similarity_functions_items);
 
         ArrayAdapter<String> safetySettingsAdapter = new ArrayAdapter<>(
                 this,
@@ -153,8 +156,15 @@ public class SettingsActivity extends AppCompatActivity {
                 themes
         );
 
+        ArrayAdapter<String> similarityFunctionAdapter = new ArrayAdapter<>(
+                this,
+                com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
+                similarityFunctions
+        );
+
         safetySettingsDropdown.setAdapter(safetySettingsAdapter);
         themeDropdown.setAdapter(themeAdapter);
+        similarityFunctionDropdown.setAdapter(similarityFunctionAdapter);
     }
 
     private void loadSettings() {
@@ -168,12 +178,14 @@ public class SettingsActivity extends AppCompatActivity {
         chunkSizeInput.setText(String.valueOf(SettingsStore.chunkSize));
         overlapSizeInput.setText(String.valueOf(SettingsStore.overlapSize));
 
+        topKEntriesInput.setText(String.valueOf(SettingsStore.topKEntries));
+        similarityFunctionDropdown.setText(SettingsStore.functionChoice.toString(), false);
+
         temperatureInput.setText(String.valueOf(SettingsStore.temperature));
         topPInput.setText(String.valueOf(SettingsStore.topP));
         topKInput.setText(String.valueOf(SettingsStore.topK));
         maxNewTokensInput.setText(String.valueOf(SettingsStore.maxNewTokens));
         safetySettingsDropdown.setText(SettingsStore.safetySettings, false);
-        streamSwitch.setChecked(SettingsStore.stream);
     }
 
     private void saveSettings() {
@@ -187,12 +199,14 @@ public class SettingsActivity extends AppCompatActivity {
         String chunkSize = chunkSizeInput.getText().toString();
         String overlapSize = overlapSizeInput.getText().toString();
 
+        String topKEntries = topKEntriesInput.getText().toString();
+        String similarityFunction = similarityFunctionDropdown.getText().toString();
+
         String temperature = temperatureInput.getText().toString();
         String topP = topPInput.getText().toString();
         String topK = topKInput.getText().toString();
         String maxNewTokens = maxNewTokensInput.getText().toString();
         String safetySettings = safetySettingsDropdown.getText().toString();
-        boolean stream = streamSwitch.isChecked();
 
         boolean isApiKeyValid = checkApiKeyValidity(apiKey);
 
@@ -204,6 +218,9 @@ public class SettingsActivity extends AppCompatActivity {
         boolean isChunkSizeValid = checkChunkSizeValidity(chunkSize);
         boolean isOverlapSizeValid = checkOverlapSizeValidity(overlapSize);
 
+        boolean isTopKEntriesValid = checkTopKEntriesValidity(topKEntries);
+        boolean isSimilarityFunctionValid = checkSimilarityFunctionValidity(similarityFunction);
+
         boolean isTemperatureValid = checkTemperatureValidity(temperature);
         boolean isTopPValid = checkTopPValidity(topP);
         boolean isTopKValid = checkTopKValidity(topK);
@@ -213,6 +230,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (isApiKeyValid && isUserNameValid && isModelNameValid && isChunkSizeValid
                 && isOverlapSizeValid && isTemperatureValid && isTopPValid &&
                 isTopKValid && isMaxNewTokensValid && isSafetySettingsValid && isThemeValid
+                && isTopKEntriesValid && isSimilarityFunctionValid
         ) {
             SharedPreferences sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -225,11 +243,13 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putInt("chunkSize", Integer.parseInt(chunkSize));
             editor.putInt("overlapSize", Integer.parseInt(overlapSize));
 
+            editor.putInt("topKEntries", Integer.parseInt(topKEntries));
+            editor.putString("similarityFunction", similarityFunction);
+
             editor.putFloat("temperature", Float.parseFloat(temperature));
             editor.putFloat("topP", Float.parseFloat(topP));
             editor.putInt("topK", Integer.parseInt(topK));
             editor.putInt("maxNewTokens", Integer.parseInt(maxNewTokens));
-            editor.putBoolean("stream", stream);
 
             editor.putString("safetySettings", safetySettings);
             editor.putString("theme", themeSettings);
@@ -307,6 +327,34 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         overlapSizeLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean checkTopKEntriesValidity(String topKEntries) {
+        if (topKEntries.equals("")) {
+            topKEntriesLayout.setError("Top K Entries cannot be empty");
+            topKEntriesLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        if (Integer.parseInt(topKEntries) > 100) {
+            topKEntriesLayout.setError("Top K Entries cannot be higher than 100");
+            topKEntriesLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        topKEntriesLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean checkSimilarityFunctionValidity(String similarityFunction) {
+        if (similarityFunction.equals("")) {
+            similarityFunctionLayout.setError("Similarity Function cannot be empty");
+            similarityFunctionLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        similarityFunctionLayout.setErrorEnabled(false);
         return true;
     }
 

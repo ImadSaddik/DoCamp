@@ -76,7 +76,7 @@ public class EntriesRetiever {
 
     private Double calculateSimilarity(List<Double> query, List<Double> vectorRepresentation, FunctionChoices similarityFunction) {
         switch (similarityFunction) {
-            case COSINE_SIMILARITY:
+            case COSINE:
                 return SimilarityFunctions.cosineSimilarity(query, vectorRepresentation);
             case EUCLIDEAN_DISTANCE:
                 return SimilarityFunctions.euclideanDistance(query, vectorRepresentation);

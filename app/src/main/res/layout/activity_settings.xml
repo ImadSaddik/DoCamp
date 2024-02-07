@@ -157,6 +157,7 @@
                             android:textColor="?attr/textPrimaryColor"
                             app:simpleItems="@array/theme_settings_items" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -354,6 +355,107 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/overlap_size_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/vectorDatabaseSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/vector_database_section"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/vectorDatabaseIconImage"
+                        android:layout_width="24dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        app:srcCompat="@drawable/database_icon" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/topKEntriesLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/topKEntriesInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/top_k_entries_placeholder"
+                            android:inputType="number"
+                            android:textColor="?attr/textPrimaryColor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/top_k_database_helper_text"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        app:srcCompat="@color/transparent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/similarityFunctionLayout"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/similarityFunctionDropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto"
+                            android:hint="@string/similar_functions"
+                            android:inputType="none"
+                            android:textColor="?attr/textPrimaryColor"
+                            app:simpleItems="@array/similarity_functions_items" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/similarity_functions_helper_text"
                     android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -578,14 +680,6 @@
                     android:textColor="?attr/textPrimaryColor"
                     android:textSize="12sp" />
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/streamSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:fontFamily="@font/roboto"
-                    android:text="@string/stream_option"
-                    android:textSize="16sp" />
             </LinearLayout>
 
         </LinearLayout>

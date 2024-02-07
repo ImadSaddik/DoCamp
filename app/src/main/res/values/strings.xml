@@ -65,5 +65,10 @@
     <string name="checking_api_key">Checking the API Key …</string>
     <string name="step_2">Step 2 : Setup the User and Model Information</string>
     <string name="congratulations">Congratulations! You are now ready to start using the application.</string>
+    <string name="vector_database_section">Vector database</string>
+    <string name="top_k_entries_placeholder">Top K entries</string>
+    <string name="top_k_database_helper_text">This value will be used to get the top k most similar entries from the database.</string>
+    <string name="similar_functions">Similarity functions</string>
+    <string name="similarity_functions_helper_text">This function will be used to calculate the similarity between the prompt and the database entries.</string>
 
 </resources>

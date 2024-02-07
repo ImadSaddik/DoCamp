@@ -1,7 +1,7 @@
 package com.example.ragapplication;
 
 public enum FunctionChoices {
-    COSINE_SIMILARITY,
+    COSINE,
     EUCLIDEAN_DISTANCE,
     MANHATTAN_DISTANCE
 }

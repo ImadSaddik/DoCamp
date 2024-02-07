@@ -118,8 +118,8 @@ public class HandleUserQuery {
 
                 EntriesRetiever entriesRetiever = new EntriesRetiever(
                         embeddedQuery,
-                        FunctionChoices.COSINE_SIMILARITY,
-                        5
+                        SettingsStore.functionChoice,
+                        SettingsStore.topKEntries
                 );
                 List<String> topChunks = entriesRetiever.retrieveEntries(activity);
 

@@ -9,9 +9,10 @@ public class SettingsStore {
     public static String apiKey;
     public static String userName;
     public static String modelName;
-    public static boolean stream;
     public static int chunkSize;
     public static int overlapSize;
+    public static int topKEntries;
+    public static FunctionChoices functionChoice;
     public static float temperature;
     public static float topP;
     public static int topK;
@@ -32,11 +33,13 @@ public class SettingsStore {
         chunkSize = sharedPreferences.getInt("chunkSize", 1000);
         overlapSize = sharedPreferences.getInt("overlapSize", 100);
 
+        topKEntries = sharedPreferences.getInt("topKEntries", 5);
+        functionChoice = FunctionChoices.valueOf(sharedPreferences.getString("similarityFunction", FunctionChoices.COSINE.toString()));
+
         temperature = sharedPreferences.getFloat("temperature", 0.9f);
         topP = sharedPreferences.getFloat("topP", 0.1f);
         topK = sharedPreferences.getInt("topK", 16);
         maxNewTokens = sharedPreferences.getInt("maxNewTokens", 2048);
         safetySettings = sharedPreferences.getString("safetySettings", "ONLY_HIGH");
-        stream = sharedPreferences.getBoolean("stream", false);
     }
 }

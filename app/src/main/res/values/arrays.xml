@@ -13,4 +13,10 @@
         <item>Dark</item>
         <item>Light</item>
     </string-array>
+
+    <string-array name="similarity_functions_items">
+        <item>COSINE</item>
+        <item>EUCLIDEAN_DISTANCE</item>
+        <item>MANHATTAN_DISTANCE</item>
+    </string-array>
 </resources>
