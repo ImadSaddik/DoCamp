@@ -134,6 +134,8 @@ public class HandleUserQuery {
                         "You might find the following context useful to answer the question :\n" +
                         "Context : \n" + context;
 
+                Log.d("PromptGemini", prompt);
+
                 queryEditText.setText("");
                 GeminiProHandler.getResponse(MainActivity.chatModel, prompt, new ResponseCallback() {
                     @Override

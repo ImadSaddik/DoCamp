@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.view.MotionEvent;
@@ -98,12 +100,19 @@ public class MainActivity extends AppCompatActivity {
         handleLeftNavigationDrawer.setBackUpDataBaseButtonListener();
         handleLeftNavigationDrawer.setRestoreDatabaseButtonListener();
         handleLeftNavigationDrawer.setResetDatabaseButtonListener();
+
+        if (savedInstanceState != null) {
+            ROOM_ID = savedInstanceState.getInt("ROOM_ID");
+            handleLeftNavigationDrawer.loadUIOnStateChange(ROOM_ID);
+        }
+
         handleLeftNavigationDrawer.populateTheBodyWithRooms();
 
-        setActionButtonsListeners();
         handleUserQuery.hideKeyboardWhenClickingOutside();
         handleUserQuery.swapBetweenUploadAndSend();
         handleUserQuery.setupSendQueryButtonListener();
+
+        setActionButtonsListeners();
     }
 
     @Override
@@ -114,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
         }
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("ROOM_ID", ROOM_ID);
     }
 
     @Override

@@ -43,6 +43,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
 
         // For debug purposes
+        // TODO: Remove this code
 //        SharedPreferences.Editor editor1 = sharedPreferences.edit();
 //        editor1.putBoolean("tutorialDone", false);
 //        editor1.apply();

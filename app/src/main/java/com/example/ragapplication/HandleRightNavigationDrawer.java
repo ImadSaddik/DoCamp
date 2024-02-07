@@ -38,7 +38,9 @@ public class HandleRightNavigationDrawer {
     }
 
     private void addFileToContainer(String fileName, int containerId) {
-        LinearLayout rowsContainer = this.activity.findViewById(containerId);
+        NavigationView rightNavigationView = this.activity.findViewById(R.id.rightNavigationView);
+        View rightHeaderView = rightNavigationView.getHeaderView(0);
+        LinearLayout rowsContainer = rightHeaderView.findViewById(containerId);
 
         TextView noFileFoundTextView = getNoFileFoundTextView(rowsContainer);
         if (noFileFoundTextView != null && noFileFoundTextView.getVisibility() == View.VISIBLE) {

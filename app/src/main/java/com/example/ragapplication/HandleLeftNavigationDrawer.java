@@ -71,6 +71,12 @@ public class HandleLeftNavigationDrawer {
                 }
 
                 LinearLayout roomRowContainer = getRoomRowContainer(roomName, roomId);
+
+                if (roomId == MainActivity.ROOM_ID) {
+                    selectedRoomRow = roomRowContainer;
+                    roomRowContainer.setBackgroundColor(ThemeUtils.getBackgroundColorBasedOnTheme(R.attr.roomSelectedBackground, activity));
+                }
+
                 roomRowContainer.setOnClickListener(v -> {
                     if (selectedRoomRow != null) {
                         selectedRoomRow.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
@@ -212,6 +218,7 @@ public class HandleLeftNavigationDrawer {
             v.setStateListAnimator(AnimatorInflater.loadStateListAnimator(this.activity, R.animator.click_animation));
             MainActivity mainActivity = (MainActivity) this.activity;
 
+            resetSelectedRoomRow();
             showNoFilesIndicator();
             cleanHomeBody();
             cleanRightNavigationDrawer();
@@ -224,9 +231,14 @@ public class HandleLeftNavigationDrawer {
         });
     }
 
+    private void resetSelectedRoomRow() {
+        selectedRoomRow.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
+        selectedRoomRow = null;
+    }
+
     private void showNoFilesIndicator() {
         TextView uploadFilesIndicator = activity.findViewById(R.id.uploadFilesIndicator);
-        uploadFilesIndicator.setText(activity.getString(R.string.no_file_found));
+        uploadFilesIndicator.setText(activity.getString(R.string.please_upload_files));
         uploadFilesIndicator.setVisibility(View.VISIBLE);
     }
 
@@ -247,7 +259,9 @@ public class HandleLeftNavigationDrawer {
     }
 
     private void cleanFilesContainer(int containerID) {
-        LinearLayout textFilesContainer = activity.findViewById(containerID);
+        NavigationView rightNavigationView = this.activity.findViewById(R.id.rightNavigationView);
+        View rightHeaderView = rightNavigationView.getHeaderView(0);
+        LinearLayout textFilesContainer = rightHeaderView.findViewById(containerID);
 
         TextView noFileFoundTextView = getNoFileFoundTextView(textFilesContainer);
         noFileFoundTextView.setVisibility(View.VISIBLE);
@@ -311,6 +325,10 @@ public class HandleLeftNavigationDrawer {
         Cursor cursor = databaseHelper.getChatHistory(roomId);
         List<Content> chatHistory = new ArrayList<>();
 
+        if (cursor.getCount() == 0) {
+            return;
+        }
+
         removeNoFilesIndicator();
         cleanHomeBody();
 
@@ -371,6 +389,11 @@ public class HandleLeftNavigationDrawer {
 
         cleanRightNavigationDrawer();
 
+        if (cursor.getCount() != 0) {
+            TextView uploadFilesIndicator = activity.findViewById(R.id.uploadFilesIndicator);
+            uploadFilesIndicator.setText(activity.getString(R.string.ready_to_chat));
+        }
+
         while (cursor.moveToNext()) {
             int fileNameIndex = cursor.getColumnIndex("File_Name");
             int fileTypeIndex = cursor.getColumnIndex("File_Type");
@@ -424,5 +447,11 @@ public class HandleLeftNavigationDrawer {
             DatabaseUtils.resetDatabase(this.activity);
             refreshLeftNavigationDrawer();
         });
+    }
+
+    public void loadUIOnStateChange(int roomId) {
+        loadChatHistory(roomId);
+        loadRoomName(roomId);
+        loadFilesHistory(roomId);
     }
 }

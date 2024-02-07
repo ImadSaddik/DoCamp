@@ -15,6 +15,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/topBarRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bottom_border"
@@ -64,16 +65,15 @@
                     android:textSize="14sp" />
             </RelativeLayout>
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/responseGenerationProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center_horizontal"
-                android:indeterminate="true"
-                android:visibility="gone"
-                tools:visibility="gone" />
         </RelativeLayout>
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/responseGenerationProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <ScrollView
             android:id="@+id/chatHistoryBody"
