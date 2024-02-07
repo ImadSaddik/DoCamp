@@ -11,9 +11,6 @@
                 android:color="?attr/borderColor" />
 
             <solid android:color="@color/transparent" />
-
-            <padding
-                android:top="10dp" />
         </shape>
     </item>
 

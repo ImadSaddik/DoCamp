@@ -16,10 +16,10 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/bottom_border"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/rightNavigationDrawerIcon"
@@ -101,12 +101,14 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:background="@drawable/top_border"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5">
+                    android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -129,18 +131,16 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_marginEnd="16dp">
 
                     <ImageButton
                         android:id="@+id/uploadFilesButton"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_alignParentStart="true"
-                        android:layout_centerInParent="false"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
+                        android:layout_centerInParent="true"
                         android:background="@drawable/circle_button"
                         android:visibility="visible"
                         app:srcCompat="@drawable/plus_icon" />
@@ -150,9 +150,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_alignParentStart="true"
-                        android:layout_centerInParent="false"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
+                        android:layout_centerInParent="true"
                         android:background="@drawable/circle_button"
                         android:clickable="true"
                         android:visibility="gone"
