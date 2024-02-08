@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -38,6 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
     private AutoCompleteTextView safetySettingsDropdown, themeDropdown, similarityFunctionDropdown,
             languagesDropdown;
     private NetworkChangeReceiver receiver;
+    public static boolean languageDialogIsVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,16 @@ public class SettingsActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> {
             saveSettings();
         });
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean("languageDialogIsVisible")) {
+                SharedPreferences sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                String newLanguageCode = savedInstanceState.getString("newLanguageCode");
+
+                showLanguageDialog(editor, newLanguageCode);
+            }
+        }
     }
 
     @Override
@@ -78,6 +90,19 @@ public class SettingsActivity extends AppCompatActivity {
         }
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (languageDialogIsVisible) {
+            outState.putBoolean("languageDialogIsVisible", true);
+
+            String newLanguageName = languagesDropdown.getText().toString();
+            String newLanguageCode = LanguageManager.getLanguageCode(this, newLanguageName);
+            outState.putString("newLanguageCode", newLanguageCode);
+        }
     }
 
     @Override
@@ -277,6 +302,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void showLanguageDialog(SharedPreferences.Editor editor, String newLanguageCode) {
+        languageDialogIsVisible = true;
+
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.language_dialog, null);
 
@@ -286,10 +313,12 @@ public class SettingsActivity extends AppCompatActivity {
         AlertDialog dialog = getAlertDialog(view);
 
         cancelButton.setOnClickListener(v -> {
+            languageDialogIsVisible = false;
             dialog.dismiss();
         });
 
         confirmButton.setOnClickListener(v -> {
+            languageDialogIsVisible = false;
             Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
 
             editor.putString("language", newLanguageCode);
@@ -306,6 +335,8 @@ public class SettingsActivity extends AppCompatActivity {
         builder.setView(view);
 
         AlertDialog dialog = builder.create();
+        dialog.setOnDismissListener(dialogInterface -> languageDialogIsVisible = false);
+
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background_room_dialog);
 
         return dialog;

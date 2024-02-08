@@ -22,6 +22,7 @@ public class RoomNameHandler {
     private TextView roomNameTextView;
     private RelativeLayout roomNameBackground;
     private Activity activity;
+    public static boolean roomNameDialogIsVisible = false;
 
     public RoomNameHandler(TextView roomNameTextView, RelativeLayout roomNameBackground, Activity activity) {
         this.roomNameTextView = roomNameTextView;
@@ -39,7 +40,9 @@ public class RoomNameHandler {
         });
     }
 
-    private void showInputDialog() {
+    public void showInputDialog() {
+        roomNameDialogIsVisible = true;
+
         LayoutInflater inflater = this.activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.room_name_dialog, null);
 
@@ -61,6 +64,8 @@ public class RoomNameHandler {
         builder.setView(view);
 
         AlertDialog dialog = builder.create();
+        dialog.setOnDismissListener(dialogInterface -> roomNameDialogIsVisible = false);
+
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background_room_dialog);
 
         return dialog;
@@ -71,9 +76,11 @@ public class RoomNameHandler {
     {
         cancelButton.setOnClickListener(v -> {
             dialog.dismiss();
+            roomNameDialogIsVisible = false;
         });
 
         confirmButton.setOnClickListener(v -> {
+            roomNameDialogIsVisible = false;
             String newText = editText.getText().toString();
 
             if (newText.isEmpty()) {

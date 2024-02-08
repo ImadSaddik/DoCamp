@@ -105,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             ROOM_ID = savedInstanceState.getInt("ROOM_ID");
             handleLeftNavigationDrawer.loadUIOnStateChange(ROOM_ID);
+
+            if (savedInstanceState.getBoolean("roomNameDialogIsVisible")) {
+                roomNameHandler.showInputDialog();
+            }
         }
 
         handleLeftNavigationDrawer.populateTheBodyWithRooms();
@@ -130,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("ROOM_ID", ROOM_ID);
+
+        if (RoomNameHandler.roomNameDialogIsVisible) {
+            outState.putBoolean("roomNameDialogIsVisible", true);
+        }
     }
 
     @Override
