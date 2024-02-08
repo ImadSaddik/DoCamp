@@ -155,7 +155,7 @@
                             android:hint="@string/language_settings"
                             android:inputType="none"
                             android:textColor="?attr/textPrimaryColor"
-                            app:simpleItems="@array/theme_settings_items" />
+                            app:simpleItems="@array/languages_items" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>

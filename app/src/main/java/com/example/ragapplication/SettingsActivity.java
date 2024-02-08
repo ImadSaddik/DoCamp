@@ -1,18 +1,11 @@
 package com.example.ragapplication;
 
-import android.app.UiModeManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,27 +13,18 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import org.w3c.dom.Text;
-
-import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
     private ImageButton backButton, saveButton;
@@ -58,6 +42,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LanguageManager.changeAppLanguage(this);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -180,7 +167,8 @@ public class SettingsActivity extends AppCompatActivity {
         userNameInput.setText(SettingsStore.userName);
         modelNameInput.setText(SettingsStore.modelName);
 
-        languagesDropdown.setText(SettingsStore.language, false);
+        String languageCode = SettingsStore.languageCode;
+        languagesDropdown.setText(LanguageManager.getLanguageName(this, languageCode), false);
 
         themeDropdown.setText(SettingsStore.theme, false);
 
@@ -203,9 +191,9 @@ public class SettingsActivity extends AppCompatActivity {
         String userName = userNameInput.getText().toString();
         String modelName = modelNameInput.getText().toString();
 
-        String newLanguage = languagesDropdown.getText().toString();
+        String newLanguageName = languagesDropdown.getText().toString();
 
-        String themeSettings = themeDropdown.getText().toString();
+        String newTheme = themeDropdown.getText().toString();
 
         String chunkSize = chunkSizeInput.getText().toString();
         String overlapSize = overlapSizeInput.getText().toString();
@@ -224,9 +212,9 @@ public class SettingsActivity extends AppCompatActivity {
         boolean isUserNameValid = checkUserNameValidity(userName);
         boolean isModelNameValid = checkModelNameValidity(modelName);
 
-        boolean isLanguageValid = checkLanguageValidity(newLanguage);
+        boolean isLanguageValid = checkLanguageValidity(newLanguageName);
 
-        boolean isThemeValid = checkThemeValidity(themeSettings);
+        boolean isThemeValid = checkThemeValidity(newTheme);
 
         boolean isChunkSizeValid = checkChunkSizeValidity(chunkSize);
         boolean isOverlapSizeValid = checkOverlapSizeValidity(overlapSize);
@@ -247,7 +235,9 @@ public class SettingsActivity extends AppCompatActivity {
         ) {
             SharedPreferences sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            String oldLanguage = SettingsStore.language;
+
+            String oldLanguageCode = SettingsStore.languageCode;
+            String oldTheme = SettingsStore.theme;
 
             editor.putString("apiKey", apiKey);
 
@@ -266,25 +256,27 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putInt("maxNewTokens", Integer.parseInt(maxNewTokens));
 
             editor.putString("safetySettings", safetySettings);
-            editor.putString("theme", themeSettings);
 
             editor.apply();
-
             SettingsStore.loadValuesFromSharedPreferences(this);
 
-            if (!oldLanguage.equals(newLanguage)) {
-                Log.d("Language_LOG", "Language Changed");
-                showLanguageDialog(editor, newLanguage);
+            if (!oldLanguageCode.equals(LanguageManager.getLanguageCode(this, newLanguageName))) {
+                showLanguageDialog(editor, LanguageManager.getLanguageCode(this, newLanguageName));
             } else {
-                ThemeManager.changeThemeBasedOnSelection(this);
-            }
+                if (!oldTheme.equals(newTheme)) {
+                    editor.putString("theme", newTheme);
+                    editor.apply();
 
-            themeDropdown.clearFocus();
-            Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
+                    ThemeManager.changeThemeBasedOnSelection(this);
+                    themeDropdown.clearFocus();
+                }
+
+                Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    private void showLanguageDialog(SharedPreferences.Editor editor, String newLanguage) {
+    private void showLanguageDialog(SharedPreferences.Editor editor, String newLanguageCode) {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.language_dialog, null);
 
@@ -298,7 +290,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         confirmButton.setOnClickListener(v -> {
-            editor.putString("language", newLanguage);
+            Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
+
+            editor.putString("language", newLanguageCode);
             editor.apply();
 
             restartApp();

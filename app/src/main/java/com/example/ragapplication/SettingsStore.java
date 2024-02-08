@@ -2,7 +2,6 @@ package com.example.ragapplication;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class SettingsStore {
@@ -19,7 +18,7 @@ public class SettingsStore {
     public static int maxNewTokens;
     public static String safetySettings;
     public static String theme;
-    public static String language;
+    public static String languageCode;
 
     public static void loadValuesFromSharedPreferences(Activity context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", context.MODE_PRIVATE);
@@ -29,7 +28,7 @@ public class SettingsStore {
         userName = sharedPreferences.getString("userName", "YOU");
         modelName = sharedPreferences.getString("modelName", "DOCGPT");
 
-        language = sharedPreferences.getString("language", "English");
+        languageCode = sharedPreferences.getString("language", LanguageManager.ENGLISH_CODE);
 
         theme = sharedPreferences.getString("theme", "Light");
 

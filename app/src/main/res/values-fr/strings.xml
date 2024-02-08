@@ -72,5 +72,7 @@
     <string name="language_settings">Langue</string>
     <string name="english_language">Anglais</string>
     <string name="french_language">Français</string>
+    <string name="confirm_language_change">Voulez-vous changer la langue ?</string>
+    <string name="alert">Alerte</string>
 
 </resources>
