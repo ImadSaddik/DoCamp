@@ -128,12 +128,7 @@ public class HandleUserQuery {
                     context.append(chunk).append("\n");
                 }
 
-                String prompt = "You will be tasked to answer questions related to a specific domain." +
-                        " Try answering the following question :\n" +
-                        "Question : " + query + "\n" +
-                        "You might find the following context useful to answer the question :\n" +
-                        "Context : \n" + context;
-
+                String prompt = PromptManager.getPrompt(query, context.toString());
                 Log.d("PromptGemini", prompt);
 
                 queryEditText.setText("");
