@@ -1,6 +1,7 @@
 package com.example.ragapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -21,7 +22,7 @@ public class SettingsStore {
     public static String languageCode;
 
     public static void loadValuesFromSharedPreferences(Activity context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
         apiKey = sharedPreferences.getString("apiKey", BuildConfig.apiKey);
 
