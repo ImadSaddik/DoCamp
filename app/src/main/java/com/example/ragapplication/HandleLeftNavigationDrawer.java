@@ -3,12 +3,9 @@ package com.example.ragapplication;
 import android.animation.AnimatorInflater;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,8 +229,10 @@ public class HandleLeftNavigationDrawer {
     }
 
     private void resetSelectedRoomRow() {
-        selectedRoomRow.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
-        selectedRoomRow = null;
+        if (selectedRoomRow != null) {
+            selectedRoomRow.setBackgroundColor(this.activity.getResources().getColor(R.color.transparent));
+            selectedRoomRow = null;
+        }
     }
 
     private void showNoFilesIndicator() {
@@ -413,7 +412,7 @@ public class HandleLeftNavigationDrawer {
 
     public void setSettingsButtonListener() {
         View leftHeaderView = this.leftNavigationView.getHeaderView(0);
-        LinearLayout settingsButton = leftHeaderView.findViewById(R.id.settingsLiearLayout);
+        LinearLayout settingsButton = leftHeaderView.findViewById(R.id.settingsLinearLayout);
 
         settingsButton.setOnClickListener(v -> {
             Intent intent = new Intent(this.activity, SettingsActivity.class);

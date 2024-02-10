@@ -98,7 +98,7 @@ public class HandleUserQuery {
 
             if (fileCountInRoom == 0) {
                 populateChatBody(
-                        "DocGPT",
+                        SettingsStore.modelName,
                         "Please upload a file first, or wait for the processing job to complete!",
                         getDate()
                 );
@@ -108,6 +108,8 @@ public class HandleUserQuery {
 
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
+                showAdByFrequency();
+
                 sendQueryButton.setEnabled(false);
                 showResponseGenerationProgressBar(true);
                 populateChatBody(SettingsStore.userName, query, getDate());
@@ -139,19 +141,27 @@ public class HandleUserQuery {
                         databaseHelper.insertRowInChatHistory(MainActivity.ROOM_ID, query, response);
 
                         showResponseGenerationProgressBar(false);
-                        populateChatBody("DocGPT", response, getDate());
+                        populateChatBody(SettingsStore.modelName, response, getDate());
                         sendQueryButton.setEnabled(true);
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
                         String errorMessage = "There was an error while processing your request. Please try again.";
-                        populateChatBody("DocGPT", errorMessage, getDate());
+                        populateChatBody(SettingsStore.modelName, errorMessage, getDate());
                         sendQueryButton.setEnabled(true);
                     }
                 });
             }
         });
+    }
+
+    private void showAdByFrequency() {
+        if (AdManager.promptCount % 10 == 0) {
+            AdManager adManager = new AdManager(activity);
+            adManager.loadAndShowAd();
+        }
+        AdManager.promptCount++;
     }
 
     private void removeNoFilesIndicator() {

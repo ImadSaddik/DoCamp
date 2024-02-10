@@ -74,5 +74,6 @@
     <string name="french_language">Français</string>
     <string name="confirm_language_change">Voulez-vous changer la langue ?</string>
     <string name="alert">Alerte</string>
+    <string name="remove_ads">Supprimez les annonces</string>
 
 </resources>

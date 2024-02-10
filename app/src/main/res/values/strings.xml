@@ -74,5 +74,6 @@
     <string name="french_language">French</string>
     <string name="confirm_language_change">Do you want to change the language?</string>
     <string name="alert">Alert</string>
+    <string name="remove_ads">Remove ads</string>
 
 </resources>
