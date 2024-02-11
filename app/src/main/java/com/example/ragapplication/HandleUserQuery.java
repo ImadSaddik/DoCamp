@@ -1,5 +1,7 @@
 package com.example.ragapplication;
 
+import android.animation.AnimatorInflater;
+import android.animation.StateListAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
@@ -201,6 +203,12 @@ public class HandleUserQuery {
         TextView dateTextView = view.findViewById(R.id.dateTextView);
         dateTextView.setText(date);
         dateTextView.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
+
+        view.setOnClickListener(v -> {
+            StateListAnimator stateListAnimator = AnimatorInflater.loadStateListAnimator(activity, R.animator.click_animation);
+            view.setClickable(true);
+            view.setStateListAnimator(stateListAnimator);
+        });
 
         LinearLayout chatBodyContainer = activity.findViewById(R.id.chatBodyContainer);
         chatBodyContainer.addView(view);

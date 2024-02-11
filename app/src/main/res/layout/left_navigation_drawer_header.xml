@@ -11,9 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView7"
@@ -21,6 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/roboto"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:text="@string/actions"
             android:textColor="?attr/textPrimaryColor"
             android:textSize="24sp" />
@@ -29,10 +29,14 @@
             android:id="@+id/createNewRoomLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:stateListAnimator="@animator/click_animation">
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -55,9 +59,13 @@
             android:id="@+id/settingsLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:stateListAnimator="@animator/click_animation">
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -81,10 +89,14 @@
             android:id="@+id/backUpDBLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:stateListAnimator="@animator/click_animation">
 
             <ImageView
                 android:layout_width="24dp"
@@ -105,9 +117,13 @@
             android:id="@+id/restoreDBLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:stateListAnimator="@animator/click_animation">
 
             <ImageView
                 android:layout_width="24dp"
@@ -129,9 +145,13 @@
             android:id="@+id/resetDBLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:stateListAnimator="@animator/click_animation">
 
             <ImageView
                 android:layout_width="24dp"
@@ -153,9 +173,13 @@
             android:id="@+id/adBlockLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:stateListAnimator="@animator/click_animation">
 
             <ImageView
                 android:layout_width="24dp"
