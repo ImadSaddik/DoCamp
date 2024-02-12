@@ -3,6 +3,8 @@ package com.example.ragapplication;
 import android.animation.AnimatorInflater;
 import android.animation.StateListAnimator;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,14 +17,18 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.w3c.dom.Text;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class HandleUserQuery {
@@ -33,8 +39,7 @@ public class HandleUserQuery {
     private GeminiProHandler geminiProBuilder;
 
     public HandleUserQuery(TextInputEditText queryEditText, ImageButton uploadFilesButton,
-                           ImageButton sendQueryButton, Activity activity)
-    {
+                           ImageButton sendQueryButton, Activity activity) {
         this.queryEditText = queryEditText;
         this.uploadFilesButton = uploadFilesButton;
         this.sendQueryButton = sendQueryButton;
@@ -45,9 +50,7 @@ public class HandleUserQuery {
         });
     }
 
-    public void hideKeyboardWhenClickingOutside() {
-        View rootView = activity.findViewById(R.id.chatHistoryBody);
-
+    public void hideKeyboardWhenClickingOutside(View rootView) {
         rootView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 v.performClick();
@@ -192,29 +195,52 @@ public class HandleUserQuery {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.chat_message_block, null);
 
-        TextView userAgentName = view.findViewById(R.id.userAgentNameTextView);
-        userAgentName.setText(userName);
-        userAgentName.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
+        setupUserAgentName(view, userName);
+        setupDateTextView(view, date);
 
-        TextView userAgentMessage = view.findViewById(R.id.userAgentMessageTextView);
-        userAgentMessage.setText(message);
-        userAgentMessage.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
-
-        TextView dateTextView = view.findViewById(R.id.dateTextView);
-        dateTextView.setText(date);
-        dateTextView.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
-
-        view.setOnClickListener(v -> {
-            StateListAnimator stateListAnimator = AnimatorInflater.loadStateListAnimator(activity, R.animator.click_animation);
-            view.setClickable(true);
-            view.setStateListAnimator(stateListAnimator);
-        });
+        TextView userAgentMessage = setupUserAgentMessage(view, message);
+        setupClickEventForMessageBlock(view, userAgentMessage);
 
         LinearLayout chatBodyContainer = activity.findViewById(R.id.chatBodyContainer);
         chatBodyContainer.addView(view);
 
         ScrollView scrollView = activity.findViewById(R.id.chatHistoryBody);
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+    }
+
+    private void setupUserAgentName(View view, String userName) {
+        TextView userAgentName = view.findViewById(R.id.userAgentNameTextView);
+        userAgentName.setText(userName);
+        userAgentName.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
+    }
+
+    private TextView setupUserAgentMessage(View view, String message) {
+        TextView userAgentMessage = view.findViewById(R.id.userAgentMessageTextView);
+        userAgentMessage.setText(message);
+        userAgentMessage.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
+
+        return userAgentMessage;
+    }
+
+    private void setupDateTextView(View view, String date) {
+        TextView dateTextView = view.findViewById(R.id.dateTextView);
+        dateTextView.setText(date);
+        dateTextView.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
+    }
+
+    private void setupClickEventForMessageBlock(View view, TextView userAgentMessage) {
+        StateListAnimator stateListAnimator = AnimatorInflater.loadStateListAnimator(activity, R.animator.click_animation);
+        view.setStateListAnimator(stateListAnimator);
+        hideKeyboardWhenClickingOutside(view);
+
+        view.setOnLongClickListener(v -> {
+            ClipboardManager clipboardManager = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("Copied text", userAgentMessage.getText());
+            clipboardManager.setPrimaryClip(clipData);
+            Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+            Log.d("TouchLOG", "long click");
+            return true;
+        });
     }
 
     private List<Double> convertStringToDoubleVector(String stringVector) {

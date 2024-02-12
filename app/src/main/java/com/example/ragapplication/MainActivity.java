@@ -1,5 +1,7 @@
 package com.example.ragapplication;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -52,7 +55,6 @@ import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
     public static int ROOM_ID;
-
     private DrawerLayout drawerLayout;
     private NavigationView leftNavigationView, rightNavigationView;
     private GestureDetectorCompat gestureDetector;
@@ -120,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
         handleLeftNavigationDrawer.populateTheBodyWithRooms();
 
-        handleUserQuery.hideKeyboardWhenClickingOutside();
+        View rootView = findViewById(R.id.chatHistoryBody);
+        handleUserQuery.hideKeyboardWhenClickingOutside(rootView);
         handleUserQuery.swapBetweenUploadAndSend();
         handleUserQuery.setupSendQueryButtonListener();
 
