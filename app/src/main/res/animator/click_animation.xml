@@ -4,7 +4,7 @@
         android:state_pressed="true">
         <set>
             <objectAnimator
-                android:duration="100"
+                android:duration="700"
                 android:interpolator="@android:anim/accelerate_decelerate_interpolator"
                 android:propertyName="backgroundColor"
                 android:valueFrom="@color/transparent"
@@ -16,7 +16,7 @@
         android:state_pressed="false">
         <set>
             <objectAnimator
-                android:duration="750"
+                android:duration="700"
                 android:interpolator="@android:anim/accelerate_decelerate_interpolator"
                 android:propertyName="backgroundColor"
                 android:valueFrom="?attr/colorControlHighlight"
