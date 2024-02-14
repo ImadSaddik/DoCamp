@@ -7,7 +7,9 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -215,8 +217,9 @@ public class HandleUserQuery {
     }
 
     private TextView setupUserAgentMessage(View view, String message) {
+        String htmlMessage = Markdown2HTML.markdownToHtml(message);
         TextView userAgentMessage = view.findViewById(R.id.userAgentMessageTextView);
-        userAgentMessage.setText(message);
+        userAgentMessage.setText(Html.fromHtml(htmlMessage));
         userAgentMessage.setTextColor(ThemeUtils.getTextColorBasedOnTheme(R.attr.textPrimaryColor, activity));
 
         return userAgentMessage;
