@@ -241,8 +241,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean isThemeValid = checkThemeValidity(newTheme);
 
-        boolean isChunkSizeValid = checkChunkSizeValidity(chunkSize);
-        boolean isOverlapSizeValid = checkOverlapSizeValidity(overlapSize);
+        boolean isChunkSizeValid = checkChunkSizeValidity(chunkSize, overlapSize);
+        boolean isOverlapSizeValid = checkOverlapSizeValidity(chunkSize, overlapSize);
 
         boolean isTopKEntriesValid = checkTopKEntriesValidity(topKEntries);
         boolean isSimilarityFunctionValid = checkSimilarityFunctionValidity(similarityFunction);
@@ -394,7 +394,7 @@ public class SettingsActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean checkChunkSizeValidity(String chunkSize) {
+    private boolean checkChunkSizeValidity(String chunkSize, String overlapSize) {
         if (chunkSize.equals("")) {
             chunkSizeLayout.setError("Chunk Size cannot be empty");
             chunkSizeLayout.setErrorEnabled(true);
@@ -407,11 +407,17 @@ public class SettingsActivity extends AppCompatActivity {
             return false;
         }
 
+        if (Integer.parseInt(chunkSize) < Integer.parseInt(overlapSize)) {
+            chunkSizeLayout.setError("Chunk Size cannot be lower than Overlap Size");
+            chunkSizeLayout.setErrorEnabled(true);
+            return false;
+        }
+
         chunkSizeLayout.setErrorEnabled(false);
         return true;
     }
 
-    private boolean checkOverlapSizeValidity(String overlapSize) {
+    private boolean checkOverlapSizeValidity(String chunkSize, String overlapSize) {
         if (overlapSize.equals("")) {
             overlapSizeLayout.setError("Overlap Size cannot be empty");
             overlapSizeLayout.setErrorEnabled(true);
@@ -420,6 +426,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (Integer.parseInt(overlapSize) > 500) {
             overlapSizeLayout.setError("Overlap Size cannot be higher than 500");
+            overlapSizeLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        if (Integer.parseInt(overlapSize) > Integer.parseInt(chunkSize)) {
+            overlapSizeLayout.setError("Overlap Size cannot be higher than Chunk Size");
             overlapSizeLayout.setErrorEnabled(true);
             return false;
         }
