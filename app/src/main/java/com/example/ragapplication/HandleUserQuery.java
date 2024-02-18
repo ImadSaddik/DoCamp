@@ -113,6 +113,16 @@ public class HandleUserQuery {
                 return;
             }
 
+            if (!MainActivity.finishedProcessingFiles) {
+                populateChatBody(
+                        SettingsStore.modelName,
+                        "Please wait for the processing job to complete!",
+                        getDate()
+                );
+                queryEditText.setText("");
+                return;
+            }
+
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
                 showAdByFrequency();

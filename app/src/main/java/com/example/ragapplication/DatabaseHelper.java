@@ -111,7 +111,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void setRoomName(String roomName, int roomID) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String query = "UPDATE Room SET Room_Name = '" + roomName + "' WHERE Room_ID = " + roomID;
+        String escapedRoomName = roomName.replace("'", "''");
+        String query = "UPDATE Room SET Room_Name = '" + escapedRoomName + "' WHERE Room_ID = " + roomID;
         db.execSQL(query);
     }
 

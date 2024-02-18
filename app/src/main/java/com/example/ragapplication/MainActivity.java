@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private HandleSwipeAndDrawers handleSwipeAndDrawers;
     public static ChatFutures chatModel;
     private NetworkChangeReceiver receiver;
+    public static boolean finishedProcessingFiles = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
             showProgressContainer();
             processFilesButton.setEnabled(false);
             processingTextProgressDescription.setText(getString(R.string.started_processing_files));
+            finishedProcessingFiles = false;
 
             CountDownLatch latch = new CountDownLatch(filesUriStore.size());
             FileProcessor fileProcessor = new FileProcessor(
@@ -324,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
                         filesUriStore.clear();
                         handleLeftNavigationDrawer.refreshLeftNavigationDrawer();
                         uploadFilesIndicator.setText(getString(R.string.ready_to_chat));
+                        finishedProcessingFiles = true;
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
