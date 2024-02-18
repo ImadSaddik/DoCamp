@@ -35,8 +35,7 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:stateListAnimator="@animator/click_animation">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -64,8 +63,7 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:stateListAnimator="@animator/click_animation">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -95,8 +93,7 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:stateListAnimator="@animator/click_animation">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:layout_width="24dp"
@@ -122,8 +119,7 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:stateListAnimator="@animator/click_animation">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:layout_width="24dp"
@@ -150,8 +146,7 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:stateListAnimator="@animator/click_animation">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:layout_width="24dp"
@@ -170,7 +165,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/adBlockLayout"
+            android:id="@+id/removeAdsLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
@@ -178,8 +173,7 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:stateListAnimator="@animator/click_animation">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:layout_width="24dp"
