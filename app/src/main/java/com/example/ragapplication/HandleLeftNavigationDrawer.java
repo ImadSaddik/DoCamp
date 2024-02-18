@@ -1,14 +1,17 @@
 package com.example.ragapplication;
 
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -210,9 +213,9 @@ public class HandleLeftNavigationDrawer {
     public void setNewRoomButtonListener() {
         View leftHeaderView = this.leftNavigationView.getHeaderView(0);
         LinearLayout newRoomButton = leftHeaderView.findViewById(R.id.createNewRoomLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, newRoomButton);
 
         newRoomButton.setOnClickListener(v -> {
-            v.setStateListAnimator(AnimatorInflater.loadStateListAnimator(this.activity, R.animator.click_animation));
             MainActivity mainActivity = (MainActivity) this.activity;
 
             resetSelectedRoomRow();
@@ -413,6 +416,7 @@ public class HandleLeftNavigationDrawer {
     public void setSettingsButtonListener() {
         View leftHeaderView = this.leftNavigationView.getHeaderView(0);
         LinearLayout settingsButton = leftHeaderView.findViewById(R.id.settingsLinearLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, settingsButton);
 
         settingsButton.setOnClickListener(v -> {
             Intent intent = new Intent(this.activity, SettingsActivity.class);
@@ -423,6 +427,7 @@ public class HandleLeftNavigationDrawer {
     public void setBackUpDataBaseButtonListener() {
         View leftHeaderView = this.leftNavigationView.getHeaderView(0);
         LinearLayout backUpDataBaseButton = leftHeaderView.findViewById(R.id.backUpDBLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, backUpDataBaseButton);
 
         backUpDataBaseButton.setOnClickListener(v -> {
             DatabaseUtils.triggerSaveDatabase(this.activity);
@@ -432,6 +437,7 @@ public class HandleLeftNavigationDrawer {
     public void setRestoreDatabaseButtonListener() {
         View leftHeaderView = this.leftNavigationView.getHeaderView(0);
         LinearLayout restoreDatabaseButton = leftHeaderView.findViewById(R.id.restoreDBLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, restoreDatabaseButton);
 
         restoreDatabaseButton.setOnClickListener(v -> {
             DatabaseUtils.triggerLoadDatabase(this.activity);
@@ -441,6 +447,7 @@ public class HandleLeftNavigationDrawer {
     public void setResetDatabaseButtonListener() {
         View leftHeaderView = this.leftNavigationView.getHeaderView(0);
         LinearLayout resetDatabaseButton = leftHeaderView.findViewById(R.id.resetDBLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, resetDatabaseButton);
 
         resetDatabaseButton.setOnClickListener(v -> {
             DatabaseUtils.resetDatabase(this.activity);
@@ -448,6 +455,15 @@ public class HandleLeftNavigationDrawer {
         });
     }
 
+    public void setRemoveAdsButtonListener() {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout removeAdsButton = leftHeaderView.findViewById(R.id.removeAdsLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, removeAdsButton);
+
+        removeAdsButton.setOnClickListener(v -> {
+        });
+    }
+    
     public void loadUIOnStateChange(int roomId) {
         loadChatHistory(roomId);
         loadRoomName(roomId);

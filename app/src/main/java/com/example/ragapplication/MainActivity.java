@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         handleLeftNavigationDrawer.setBackUpDataBaseButtonListener();
         handleLeftNavigationDrawer.setRestoreDatabaseButtonListener();
         handleLeftNavigationDrawer.setResetDatabaseButtonListener();
+        handleLeftNavigationDrawer.setRemoveAdsButtonListener();
 
         if (savedInstanceState != null) {
             ROOM_ID = savedInstanceState.getInt("ROOM_ID");

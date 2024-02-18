@@ -195,16 +195,16 @@ public class HandleUserQuery {
 
     public void populateChatBody(String userName, String message, String date) {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.chat_message_block, null);
+        View messageBlock = inflater.inflate(R.layout.chat_message_block, null);
+        setupUserAgentName(messageBlock, userName);
+        setupDateTextView(messageBlock, date);
 
-        setupUserAgentName(view, userName);
-        setupDateTextView(view, date);
-
-        TextView userAgentMessage = setupUserAgentMessage(view, message);
-        setupClickEventForMessageBlock(view, userAgentMessage);
+        TextView userAgentMessage = setupUserAgentMessage(messageBlock, message);
+        setupClickEventForMessageBlock(messageBlock, userAgentMessage);
+        ClickAnimationHelper.setViewClickAnimation(activity, messageBlock);
 
         LinearLayout chatBodyContainer = activity.findViewById(R.id.chatBodyContainer);
-        chatBodyContainer.addView(view);
+        chatBodyContainer.addView(messageBlock);
 
         ScrollView scrollView = activity.findViewById(R.id.chatHistoryBody);
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
@@ -232,8 +232,6 @@ public class HandleUserQuery {
     }
 
     private void setupClickEventForMessageBlock(View view, TextView userAgentMessage) {
-        StateListAnimator stateListAnimator = AnimatorInflater.loadStateListAnimator(activity, R.animator.click_animation);
-        view.setStateListAnimator(stateListAnimator);
         hideKeyboardWhenClickingOutside(view);
 
         view.setOnLongClickListener(v -> {
