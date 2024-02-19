@@ -136,7 +136,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int getFileId(String fileName, String fileType) {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String escapedFileName = fileName.replace("'", "''");
-        String query = "SELECT File_ID FROM Files WHERE File_Name = '" + escapedFileName + "' AND File_Type = '" + fileType + "'";
+        String query = "SELECT File_ID FROM Files WHERE File_Name = '" + escapedFileName + "' AND File_Type = '" + fileType + "'"
+                + " AND Room_ID = " + MainActivity.ROOM_ID;
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
@@ -145,6 +146,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return -1;
+    }
+
+    public void deleteFile(int fileId) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String query = "DELETE FROM Files WHERE File_ID = " + fileId;
+        sqLiteDatabase.execSQL(query);
+    }
+
+    public String getFileType(String fileName) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String escapedFileName = fileName.replace("'", "''");
+        String query = "SELECT File_Type FROM Files WHERE File_Name = '" + escapedFileName + "' AND Room_ID = " + MainActivity.ROOM_ID;
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            String fileType = cursor.getString(0);
+            return fileType;
+        }
+
+        return null;
     }
 
     public int getFileCountInRoom(int roomId) {
@@ -174,6 +195,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String query = "SELECT Chunk, Vector_Representation FROM Embedding WHERE Room_ID = " + roomId;
         return sqLiteDatabase.rawQuery(query, null);
+    }
+
+    public void deleteEmbeddings(int fileId) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String query = "DELETE FROM Embedding WHERE File_ID = " + fileId + " AND Room_ID = " + MainActivity.ROOM_ID;
+        sqLiteDatabase.execSQL(query);
     }
 
     public void insertRowInChatHistory(int roomId, String userQuery, String modelResponse) {

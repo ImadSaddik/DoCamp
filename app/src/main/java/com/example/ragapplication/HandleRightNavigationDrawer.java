@@ -121,6 +121,8 @@ public class HandleRightNavigationDrawer {
             String fileName = ((TextView) fileRowLayout.getChildAt(0)).getText().toString();
             filesUriStore.remove(fileName);
             rowsContainer.removeView(fileRowLayout);
+            removeFileAndEmbeddings(fileName);
+
             int containerChildCount = rowsContainer.getChildCount();
             if (containerChildCount == 1 && noFileFoundTextView != null) {
                 noFileFoundTextView.setVisibility(View.VISIBLE);
@@ -128,5 +130,14 @@ public class HandleRightNavigationDrawer {
         });
 
         return removeButton;
+    }
+
+    private void removeFileAndEmbeddings(String fileName) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(this.activity);
+        String fileType = databaseHelper.getFileType(fileName);
+        int fileId = databaseHelper.getFileId(fileName, fileType);
+
+        databaseHelper.deleteEmbeddings(fileId);
+        databaseHelper.deleteFile(fileId);
     }
 }
