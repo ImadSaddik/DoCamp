@@ -26,7 +26,7 @@ public class AdManager {
     public void loadAndShowAd() {
         MobileAds.initialize(activity);
         AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(activity, "ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
+        InterstitialAd.load(activity, "ca-app-pub-4055324196283643/2250314657", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
