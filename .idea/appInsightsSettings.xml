@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.ragapplication" />
+                  <option name="mobileSdkAppId" value="1:172339239262:android:6cd708f5e7b56335e257cf" />
+                  <option name="projectId" value="docchat-ef30a" />
+                  <option name="projectNumber" value="172339239262" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

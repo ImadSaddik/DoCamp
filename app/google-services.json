@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "172339239262",
+    "project_id": "docchat-ef30a",
+    "storage_bucket": "docchat-ef30a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172339239262:android:6cd708f5e7b56335e257cf",
+        "android_client_info": {
+          "package_name": "com.example.ragapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172339239262-q3fhn3grfc8ci9888th7elg0fm99abv6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ragapplication",
+            "certificate_hash": "800d94e4e7d9264e67111ba61b3834844b45e897"
+          }
+        },
+        {
+          "client_id": "172339239262-nn1oubmag8h2fnu1l11pa3f75ak9lb55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsQUaDazm-otd5EiyiPf5l7BhvWs-gSsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172339239262-nn1oubmag8h2fnu1l11pa3f75ak9lb55.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

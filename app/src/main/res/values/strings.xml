@@ -75,5 +75,9 @@
     <string name="confirm_language_change">Do you want to change the language?</string>
     <string name="alert">Alert</string>
     <string name="remove_ads">Remove ads</string>
+    <string name="default_web_client_id">172339239262-nn1oubmag8h2fnu1l11pa3f75ak9lb55</string>
+    <string name="google_sign_in">Sign In</string>
+    <string name="google_sign_out">Sign Out</string>
+    <string name="confirm_sign_out">Do you want to Sign Out ?</string>
 
 </resources>

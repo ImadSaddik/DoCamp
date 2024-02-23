@@ -1,27 +1,34 @@
 package com.example.ragapplication;
 
-import android.animation.AnimatorInflater;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.collection.ArraySet;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -30,11 +37,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HandleLeftNavigationDrawer {
     private NavigationView leftNavigationView;
     private Activity activity;
     private DrawerLayout drawerLayout;
     private LinearLayout selectedRoomRow = null;
+    public static boolean signOutDialogIsVisible = false;
 
     public HandleLeftNavigationDrawer(NavigationView leftNavigationView, Activity activity, DrawerLayout drawerLayout) {
         this.leftNavigationView = leftNavigationView;
@@ -463,7 +473,115 @@ public class HandleLeftNavigationDrawer {
         removeAdsButton.setOnClickListener(v -> {
         });
     }
-    
+
+    public void checkIfUserIsSignedIn() {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout signOutLayout = leftHeaderView.findViewById(R.id.signOutLayout);
+        LinearLayout googleAuthLayout = leftHeaderView.findViewById(R.id.googleAuthLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, signOutLayout);
+
+        GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.activity);
+        if (googleSignInAccount != null) {
+            String userName = googleSignInAccount.getDisplayName();
+            Uri userPhoto = googleSignInAccount.getPhotoUrl();
+            setSignOutButton(userName, userPhoto);
+        } else {
+            googleAuthLayout.setVisibility(View.VISIBLE);
+            signOutLayout.setVisibility(View.GONE);
+        }
+    }
+
+    public void setGoogleAuthButtonListener() {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout googleAuthButton = leftHeaderView.findViewById(R.id.googleAuthLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, googleAuthButton);
+
+        googleAuthButton.setOnClickListener(v -> {
+            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(this.activity.getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this.activity, googleSignInOptions);
+            googleSignInClient.signOut()
+                    .addOnCompleteListener(this.activity, task -> {
+                        Log.d("SIGN_OUT_TAG", "User signed out.");
+                    });
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+            this.activity.startActivityForResult(signInIntent, MainActivity.SIGN_IN_REQUEST);
+        });
+    }
+
+    public void setSignOutButton(String userName, Uri userPhoto) {
+        View leftHeaderView = this.leftNavigationView.getHeaderView(0);
+        LinearLayout signOutLayout = leftHeaderView.findViewById(R.id.signOutLayout);
+        LinearLayout googleAuthLayout = leftHeaderView.findViewById(R.id.googleAuthLayout);
+        ClickAnimationHelper.setViewClickAnimation(activity, signOutLayout);
+
+        CircleImageView userPhotoImageView = leftHeaderView.findViewById(R.id.userPhotoCircleImageView);
+        TextView userNameTextView = leftHeaderView.findViewById(R.id.userNameTextView);
+
+        userNameTextView.setText(userName);
+        Glide.with(this.activity).load(userPhoto).into(userPhotoImageView);
+
+        googleAuthLayout.setVisibility(View.GONE);
+        signOutLayout.setVisibility(View.VISIBLE);
+        signOutLayout.setOnClickListener(v -> {
+            GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.activity);
+            if (googleSignInAccount != null) {
+                GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(this.activity.getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+
+                showSignOutDialog(googleSignInOptions, signOutLayout, googleAuthLayout);
+            }
+        });
+    }
+
+    public void showSignOutDialog(GoogleSignInOptions googleSignInOptions, LinearLayout signOutLayout, LinearLayout googleAuthLayout) {
+        signOutDialogIsVisible = true;
+
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View view = inflater.inflate(R.layout.sign_out_dialog, null);
+
+        Button cancelButton = view.findViewById(R.id.cancelSignOutButton);
+        Button confirmButton = view.findViewById(R.id.confirmSignOutButton);
+
+        AlertDialog dialog = getAlertDialog(view);
+
+        cancelButton.setOnClickListener(v -> {
+            signOutDialogIsVisible = false;
+            dialog.dismiss();
+        });
+
+        confirmButton.setOnClickListener(v -> {
+            signOutDialogIsVisible = false;
+
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this.activity, googleSignInOptions);
+            googleSignInClient.signOut()
+                    .addOnCompleteListener(this.activity, task -> {
+                        Toast.makeText(this.activity, "Signed out successfully.", Toast.LENGTH_SHORT).show();
+                        googleAuthLayout.setVisibility(View.VISIBLE);
+                        signOutLayout.setVisibility(View.GONE);
+                    });
+        });
+
+        dialog.show();
+    }
+
+    private AlertDialog getAlertDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+        builder.setView(view);
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnDismissListener(dialogInterface -> signOutDialogIsVisible = false);
+
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background_room_dialog);
+
+        return dialog;
+    }
+
     public void loadUIOnStateChange(int roomId) {
         loadChatHistory(roomId);
         loadRoomName(roomId);

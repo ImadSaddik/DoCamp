@@ -44,17 +44,29 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
 
 import java.io.File;
+import java.nio.channels.AcceptPendingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
     public static int ROOM_ID;
+    public static final int SIGN_IN_REQUEST = 3647;
     private DrawerLayout drawerLayout;
     private NavigationView leftNavigationView, rightNavigationView;
     private GestureDetectorCompat gestureDetector;
@@ -112,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
         handleLeftNavigationDrawer.setRestoreDatabaseButtonListener();
         handleLeftNavigationDrawer.setResetDatabaseButtonListener();
         handleLeftNavigationDrawer.setRemoveAdsButtonListener();
+        handleLeftNavigationDrawer.checkIfUserIsSignedIn();
+        handleLeftNavigationDrawer.setGoogleAuthButtonListener();
 
         if (savedInstanceState != null) {
             ROOM_ID = savedInstanceState.getInt("ROOM_ID");
@@ -119,6 +133,19 @@ public class MainActivity extends AppCompatActivity {
 
             if (savedInstanceState.getBoolean("roomNameDialogIsVisible")) {
                 roomNameHandler.showInputDialog();
+            }
+
+            if (savedInstanceState.getBoolean("signOutDialogIsVisible")) {
+                View leftHeaderView = leftNavigationView.getHeaderView(0);
+                LinearLayout signOutLayout = leftHeaderView.findViewById(R.id.signOutLayout);
+                LinearLayout googleAuthLayout = leftHeaderView.findViewById(R.id.googleAuthLayout);
+
+                GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(this.getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+
+                handleLeftNavigationDrawer.showSignOutDialog(googleSignInOptions, signOutLayout, googleAuthLayout);
             }
         }
 
@@ -149,6 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (RoomNameHandler.roomNameDialogIsVisible) {
             outState.putBoolean("roomNameDialogIsVisible", true);
+        }
+
+        if (HandleLeftNavigationDrawer.signOutDialogIsVisible) {
+            outState.putBoolean("signOutDialogIsVisible", true);
         }
     }
 
@@ -343,11 +374,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SIGN_IN_REQUEST) {
+            handleSignIn(data);
+        }
 
         if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Log.d("SIGN_IN_TAG", "onActivityResult inside: " + requestCode + " " + resultCode);
             if (requestCode == 1) {
                 handleFiles(data);
-            } else {
+            } else  {
                 handleDatabase(requestCode, data);
             }
         }
@@ -369,6 +404,28 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleSignIn(Intent data) {
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        try {
+            GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
+            AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+            FirebaseAuth.getInstance().signInWithCredential(authCredential)
+                    .addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            String userName = googleSignInAccount.getDisplayName();
+                            Uri userPhoto = googleSignInAccount.getPhotoUrl();
+
+                            handleLeftNavigationDrawer.setSignOutButton(userName, userPhoto);
+                            Toast.makeText(MainActivity.this, userName + "Signed in successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed to sign in!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } catch (ApiException e) {
+            Toast.makeText(this, "Failed to sign in! Something unexpected happened", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -26,6 +26,7 @@ import com.google.ai.client.generativeai.java.ChatFutures;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseApp;
 
 public class WelcomeScreenActivity extends AppCompatActivity {
     private Button next1Button, next2Button, previous2Button, previous3Button, confirmButton;
@@ -39,6 +40,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
 
         sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
 
