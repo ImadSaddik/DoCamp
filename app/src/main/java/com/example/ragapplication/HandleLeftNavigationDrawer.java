@@ -565,6 +565,7 @@ public class HandleLeftNavigationDrawer {
                         googleAuthLayout.setVisibility(View.VISIBLE);
                         signOutLayout.setVisibility(View.GONE);
                     });
+            dialog.dismiss();
         });
 
         dialog.show();
