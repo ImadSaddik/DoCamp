@@ -419,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
                             Uri userPhoto = googleSignInAccount.getPhotoUrl();
 
                             handleLeftNavigationDrawer.setSignOutButton(userName, userPhoto);
-                            Toast.makeText(MainActivity.this, userName + "Signed in successfully!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, userName + " signed in successfully!", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(MainActivity.this, "Failed to sign in!", Toast.LENGTH_SHORT).show();
                         }
