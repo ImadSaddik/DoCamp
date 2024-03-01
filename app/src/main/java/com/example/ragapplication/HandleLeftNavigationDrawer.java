@@ -337,12 +337,13 @@ public class HandleLeftNavigationDrawer {
         Cursor cursor = databaseHelper.getChatHistory(roomId);
         List<Content> chatHistory = new ArrayList<>();
 
+        cleanHomeBody();
         if (cursor.getCount() == 0) {
+            showNoFilesIndicator();
             return;
         }
 
         removeNoFilesIndicator();
-        cleanHomeBody();
 
         while (cursor.moveToNext()) {
             int userQueryIndex = cursor.getColumnIndex("User_Query");
