@@ -1,7 +1,5 @@
 package com.example.ragapplication;
 
-import android.animation.AnimatorInflater;
-import android.animation.StateListAnimator;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -9,7 +7,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,13 +21,10 @@ import android.widget.Toast;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.w3c.dom.Text;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class HandleUserQuery {
@@ -125,52 +119,63 @@ public class HandleUserQuery {
 
             String query = queryEditText.getText().toString().trim();
             if (!query.isEmpty()) {
-                showAdByFrequency();
+                try {
 
-                sendQueryButton.setEnabled(false);
-                showResponseGenerationProgressBar(true);
-                populateChatBody(SettingsStore.userName, query, getDate());
+                    showAdByFrequency();
 
-                EmbeddingModel embeddingModel = new EmbeddingModel(this.activity);
-                String embeddedQueryAsString = embeddingModel.getEmbedding(query).join();
-                List<Double> embeddedQuery = convertStringToDoubleVector(embeddedQueryAsString);
+                    sendQueryButton.setEnabled(false);
+                    showResponseGenerationProgressBar(true);
+                    populateChatBody(SettingsStore.userName, query, getDate());
 
-                EntriesRetiever entriesRetiever = new EntriesRetiever(
-                        embeddedQuery,
-                        SettingsStore.functionChoice,
-                        SettingsStore.topKEntries
-                );
-                List<String> topChunks = entriesRetiever.retrieveEntries(activity);
+                    EmbeddingModel embeddingModel = new EmbeddingModel(this.activity);
+                    String embeddedQueryAsString = embeddingModel.getEmbedding(query).join();
+                    List<Double> embeddedQuery = convertStringToDoubleVector(embeddedQueryAsString);
 
-                StringBuilder context = new StringBuilder();
-                for (String chunk : topChunks) {
-                    context.append(chunk).append("\n");
+                    EntriesRetiever entriesRetiever = new EntriesRetiever(
+                            embeddedQuery,
+                            SettingsStore.functionChoice,
+                            SettingsStore.topKEntries
+                    );
+                    List<String> topChunks = entriesRetiever.retrieveEntries(activity);
+
+                    StringBuilder context = new StringBuilder();
+                    for (String chunk : topChunks) {
+                        context.append(chunk).append("\n");
+                    }
+
+                    String prompt = PromptManager.getPrompt(query, context.toString());
+                    Log.d("PromptGemini", prompt);
+
+                    queryEditText.setText("");
+                    GeminiProHandler.getResponse(MainActivity.chatModel, prompt, new ResponseCallback() {
+                        @Override
+                        public void onResponse(String response) {
+                            DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+                            databaseHelper.insertRowInChatHistory(MainActivity.ROOM_ID, query, response);
+
+                            showResponseGenerationProgressBar(false);
+                            populateChatBody(SettingsStore.modelName, response, getDate());
+                            sendQueryButton.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            String errorMessage = "There was an error while processing your request. Please try again.";
+                            showErrorInChatBody(errorMessage);
+                        }
+                    });
+                } catch (Exception e) {
+                    String errorMessage = "There was an error while processing your request. Please try again.";
+                    showErrorInChatBody(errorMessage);
                 }
-
-                String prompt = PromptManager.getPrompt(query, context.toString());
-                Log.d("PromptGemini", prompt);
-
-                queryEditText.setText("");
-                GeminiProHandler.getResponse(MainActivity.chatModel, prompt, new ResponseCallback() {
-                    @Override
-                    public void onResponse(String response) {
-                        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
-                        databaseHelper.insertRowInChatHistory(MainActivity.ROOM_ID, query, response);
-
-                        showResponseGenerationProgressBar(false);
-                        populateChatBody(SettingsStore.modelName, response, getDate());
-                        sendQueryButton.setEnabled(true);
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        String errorMessage = "There was an error while processing your request. Please try again.";
-                        populateChatBody(SettingsStore.modelName, errorMessage, getDate());
-                        sendQueryButton.setEnabled(true);
-                    }
-                });
             }
         });
+    }
+
+    private void showErrorInChatBody(String errorMessage) {
+        showResponseGenerationProgressBar(false);
+        populateChatBody(SettingsStore.modelName, errorMessage, getDate());
+        sendQueryButton.setEnabled(true);
     }
 
     private void showAdByFrequency() {
