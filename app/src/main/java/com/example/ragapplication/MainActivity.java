@@ -62,6 +62,7 @@ import java.io.File;
 import java.nio.channels.AcceptPendingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
@@ -391,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleFiles(Intent data) {
         try {
             Uri fileUri = data.getData();
-            String fileName = removeExtension(getFileName(fileUri));
+            String fileName = FileUtilities.removeExtension(getFileName(fileUri));
             String mimeType = getContentResolver().getType(fileUri);
             int fileId = databaseHelper.getFileId(fileName, FileUtilities.getFileType(mimeType));
 
@@ -438,10 +439,6 @@ public class MainActivity extends AppCompatActivity {
             DatabaseUtils.loadDatabase(this, sourceUri);
             handleLeftNavigationDrawer.refreshLeftNavigationDrawer();
         }
-    }
-
-    private String removeExtension(String fileName) {
-        return fileName.split("\\.")[0];
     }
 
     private String getFileName(Uri fileUri) {

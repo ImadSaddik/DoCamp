@@ -37,10 +37,10 @@ public class EmbeddingModel {
                 String content = "{ \"model\": \"models/embedding-001\", \"content\": { \"parts\":[{ \"text\": \"" + escapedQuery + "\"}]}}";
                 String response = sendPostRequest(apiURL, content);
                 embeddingValues = parseEmbeddingResponse(response);
-                Log.d("Embedding Response", embeddingValues);
+                Log.d("EmbeddingResponse", embeddingValues);
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.d("Embedding Error", e.getMessage() + "\n" + query);
+                Log.d("EmbeddingResponse", "ERROR EMBEDDING");
             }
             return embeddingValues;
         });
@@ -120,7 +120,9 @@ public class EmbeddingModel {
                         progressDescription.setText(progressText);
                         Log.d("Embedding progress description", progressText);
                     });
-                    Thread.sleep(1500);
+                    if (!SettingsStore.apiKeyDelaySwitch) {
+                        Thread.sleep(1500);
+                    }
                     return getEmbedding(chunks[finalI]).join();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

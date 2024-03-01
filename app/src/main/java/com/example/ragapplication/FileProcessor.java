@@ -31,7 +31,7 @@ public class FileProcessor {
 
     public void processFile(Uri fileUri) {
         try {
-            String fileName = removeExtension(getFileName(fileUri));
+            String fileName = FileUtilities.removeExtension(getFileName(fileUri));
             String mimeType = this.activity.getContentResolver().getType(fileUri);
 
             String textDescription = "Processing " + fileName + "...";
@@ -93,10 +93,6 @@ public class FileProcessor {
         }
 
         return null;
-    }
-
-    private String removeExtension(String fileName) {
-        return fileName.split("\\.")[0];
     }
 
     private String getFileType(String mimeType) {

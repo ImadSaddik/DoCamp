@@ -31,4 +31,16 @@ public class FileUtilities {
 
         return 0;
     }
+
+    public static String removeExtension(String fileName) {
+        String[] parts = fileName.split("\\.");
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < parts.length - 1; i++) {
+            stringBuilder.append(parts[i]).append(".");
+        }
+
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        return stringBuilder.toString();
+    }
 }

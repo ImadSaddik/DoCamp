@@ -105,6 +105,18 @@
         android:text="@string/start_process"
         android:textSize="16sp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto"
+        android:gravity="center"
+        android:inputType="text|textMultiLine"
+        android:text="@string/api_sleep_time_clarification"
+        android:textAlignment="textStart"
+        android:textColor="?attr/textPrimaryColor"
+        android:textSize="12sp" />
+
     <LinearLayout
         android:id="@+id/processingTextProgressContainer"
         android:layout_width="match_parent"

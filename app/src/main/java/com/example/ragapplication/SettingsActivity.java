@@ -24,6 +24,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -38,6 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
             topKEntriesLayout, similarityFunctionLayout, languagesLayout;
     private AutoCompleteTextView safetySettingsDropdown, themeDropdown, similarityFunctionDropdown,
             languagesDropdown;
+    private MaterialSwitch apiKeyDelaySwitch;
     private NetworkChangeReceiver receiver;
     public static boolean languageDialogIsVisible = false;
 
@@ -157,6 +159,8 @@ public class SettingsActivity extends AppCompatActivity {
         topKEntriesLayout = findViewById(R.id.topKEntriesLayout);
         similarityFunctionLayout = findViewById(R.id.similarityFunctionLayout);
         languagesLayout = findViewById(R.id.languagesLayout);
+
+        apiKeyDelaySwitch = findViewById(R.id.apiKeyDelaySwitch);
     }
 
     private void setHyperLinks() {
@@ -188,6 +192,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadSettings() {
         apiKeyInput.setText(SettingsStore.apiKey);
+        apiKeyDelaySwitch.setChecked(SettingsStore.apiKeyDelaySwitch);
 
         userNameInput.setText(SettingsStore.userName);
         modelNameInput.setText(SettingsStore.modelName);
@@ -212,6 +217,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveSettings() {
         String apiKey = apiKeyInput.getText().toString();
+        boolean apiKeySwitchChecked = apiKeyDelaySwitch.isChecked();
 
         String userName = userNameInput.getText().toString();
         String modelName = modelNameInput.getText().toString();
@@ -265,6 +271,7 @@ public class SettingsActivity extends AppCompatActivity {
             String oldTheme = SettingsStore.theme;
 
             editor.putString("apiKey", apiKey);
+            editor.putBoolean("apiKeyDelaySwitch", apiKeySwitchChecked);
 
             editor.putString("userName", userName);
             editor.putString("modelName", modelName);

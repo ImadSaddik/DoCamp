@@ -20,11 +20,13 @@ public class SettingsStore {
     public static String safetySettings;
     public static String theme;
     public static String languageCode;
+    public static boolean apiKeyDelaySwitch;
 
     public static void loadValuesFromSharedPreferences(Activity context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
         apiKey = sharedPreferences.getString("apiKey", BuildConfig.apiKey);
+        apiKeyDelaySwitch = sharedPreferences.getBoolean("apiKeyDelaySwitch", false);
 
         userName = sharedPreferences.getString("userName", "YOU");
         modelName = sharedPreferences.getString("modelName", "DOCGPT");
