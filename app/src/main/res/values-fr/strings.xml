@@ -80,6 +80,6 @@
     <string name="google_sign_out">Déconnexion</string>
     <string name="confirm_sign_out">Voulez-vous vous déconnecter ?</string>
     <string name="api_sleep_time_clarification"><b>Remarque:</b> Lors du traitement des fichiers, un délai est ajouté par défaut car la version gratuite de l\'API Gemini présente certaines limitations. Si vous disposez d\'une clé API payante, vous pouvez désactiver ce délai dans les paramètres.</string>
-    <string name="api_key_toggle_delay_off">⚠️ Désactivez le délai de requête API. Cela ne doit être activé que si vous avez une version payante de l\'API.</string>
+    <string name="api_key_toggle_delay_off">Désactivez le délai de requête API. Cela ne doit être activé que si vous avez une version payante de l\'API.</string>
 
 </resources>

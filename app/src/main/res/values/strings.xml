@@ -80,6 +80,6 @@
     <string name="google_sign_out">Sign Out</string>
     <string name="confirm_sign_out">Do you want to Sign Out ?</string>
     <string name="api_sleep_time_clarification"><b>Note:</b> When processing files by default a delay is added because the free version of the Gemini API has some limitations. If you have a paid API Key, then you can disable this delay in the settings.</string>
-    <string name="api_key_toggle_delay_off">⚠️ Disable the API request delay. This should be activated only if you have a paid version of the API.</string>
+    <string name="api_key_toggle_delay_off">Disable the API request delay. This should be activated only if you have a paid version of the API.</string>
 
 </resources>
