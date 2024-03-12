@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
             String mimeType = getContentResolver().getType(fileUri);
             int fileId = databaseHelper.getFileId(fileName, FileUtilities.getFileType(mimeType));
 
-            if (filesUriStore.containsKey(fileName) || fileId == ROOM_ID) {
+            if (filesUriStore.containsKey(fileName) || fileId != -1) {
                 Toast.makeText(this, "File already added!", Toast.LENGTH_SHORT).show();
             } else {
                 filesUriStore.put(fileName, fileUri);
