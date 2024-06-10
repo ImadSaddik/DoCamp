@@ -53,14 +53,14 @@ To use the DoCamp application, follow these steps:
 
    - **Option 2:** Install the app and provide the API Key in the welcome page.
 
-     ![Welcome Screen API Key](./images/wecome_screen_api_key.jpg)
+     <img src="./images/wecome_screen_api_key.jpg" width="50%">
 
 3. If you are paying for the API Key, make sure to disable the API Key delay in the settings.
 
-   ![Disable API Key Delay](./images/disable_api_key_delay.jpg)
+   <img src="./images/disable_api_key_delay.jpg" width="50%">
 
-4. Ensure that you can use the Gemini API in your country. More details can be found [here](https://ai.google.dev/gemini-api/docs/available-regions).
-5. Enjoy using the app! 😉
+5. Ensure that you can use the Gemini API in your country. More details can be found [here](https://ai.google.dev/gemini-api/docs/available-regions).
+6. Enjoy using the app! 😉
 
 ## Known Issues
 
