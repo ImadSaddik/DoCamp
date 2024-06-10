@@ -24,6 +24,9 @@ RAG applications rely on vector databases, and DoCamp incorporates a simple vect
 
 DoCamp heavily utilizes CompletableFutures to handle long-running tasks in the background. This was a new concept for me and presented some challenges during the development process.
 
+### Development Process
+I'm documenting the development process of DoCamp on my YouTube channel. You can follow along and learn more about the app's development by watching the playlist [here](https://www.youtube.com/watch?v=RJ3qq_FlMGs&list=PLMSb3cZXtIfoCTl1-2qBmxugN8NkRovvs).
+
 ## Setup and Usage
 
 To use the DoCamp application, follow these steps:
